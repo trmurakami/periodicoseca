@@ -1,0 +1,30 @@
+{
+    "form": {
+        "attributes": {
+            "action": "rppbci.php",
+            "method": "post"
+        },
+        "buttons": {
+            "submit": {
+                "title": "Atualizar registro no RPPBCI"
+            },                               
+            "reset": {}
+        }
+    },
+    "fields": {
+        "helper": "",
+        "name": {
+            "size": 1000
+        },
+        "datePublished": {
+            "type": "date",
+            "picker": {
+                "format": "YYYY"
+            },
+            "manualEntry": false
+        },
+        "description":{
+            "type":"textarea"
+        }
+    }                       
+}
