@@ -137,7 +137,7 @@ class Elasticsearch
             $params["index"] = $index;
         }
 
-        $params["id"] = $_id;
+        $params["_source"] = $_id;
         $params["body"] = $body;
 
         $response = $client->deleteByQuery($params);
