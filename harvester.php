@@ -52,7 +52,9 @@ if (isset($_GET["oai"])) {
     $body_repository["doc"]["type"] = "journal";
     $body_repository["doc_as_upsert"] = true;
 
-    //$insert_repository_result = Elasticsearch::update($body_repository["doc"]["url"], $body_repository, $indexAdm);
+    $sha256 = hash('sha256', ''.$body_repository["doc"]["url"].'');
+
+    $insert_repository_result = Elasticsearch::update($sha256, $body_repository, $indexAdm);
     
     // Store repository data - Fim
 
