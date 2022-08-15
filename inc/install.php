@@ -21,7 +21,7 @@ if (isset($testIndex) && $testIndex == false) {
     Elasticsearch::createIndex($indexAdm, $client);
 }
 
-header("Location: ../index.php"); die();
+//header("Location: ../index.php"); die();
 
 
 ?>
