@@ -1,6 +1,7 @@
 <?php
 
-$branch = "Nome";
+$branch = "RPPBCI";
+$branch_abrev = "RPPBCI"; 
 $url_base = "http://localhost/rppbci";
 $branch_description = "";
 
