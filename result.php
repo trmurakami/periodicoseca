@@ -54,90 +54,99 @@ $mode = "reference";
 
 ?>
 <html>
-    <head>
-        <?php require 'inc/meta-header.php' ?>
-        <title>Resultado da busca</title>
 
-        <!-- D3.js Libraries and CSS -->
-        <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.2.2/d3.v3.min.js"></script>
+<head>
+    <?php require 'inc/meta-header.php' ?>
+    <title>Resultado da busca</title>
 
-        <!-- UV Charts -->
-        <script type="text/javascript" src=inc/uvcharts/uvcharts.full.min.js></script>
+    <!-- D3.js Libraries and CSS -->
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.2.2/d3.v3.min.js"></script>
 
-        <!-- Altmetric Script -->
-        <script type='text/javascript' src='https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js'></script>
+    <!-- UV Charts -->
+    <script type="text/javascript" src=inc/uvcharts/uvcharts.full.min.js></script>
 
-        <!-- PlumX Script -->
-        <script type="text/javascript" src="//cdn.plu.mx/widget-details.js"></script>
+    <!-- Altmetric Script -->
+    <script type='text/javascript' src='https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js'></script>
+
+    <!-- PlumX Script -->
+    <script type="text/javascript" src="//cdn.plu.mx/widget-details.js"></script>
 
 
-    </head>
-    <body>
+</head>
 
-        <?php
+<body>
+
+    <?php
         if (file_exists("inc/analyticstracking.php")) {
             include_once "inc/analyticstracking.php";
         }
         ?>
 
 
-        <!-- NAV -->
-        <?php require 'inc/navbar.php'; ?>
-        <!-- /NAV -->
+    <!-- NAV -->
+    <?php require 'inc/navbar.php'; ?>
+    <!-- /NAV -->
 
-        <br/><br/><br/><br/>
+    <br /><br /><br /><br />
 
-        <main role="main">
-            <div class="container">
+    <main role="main">
+        <div class="container">
 
             <div class="row">
                 <div class="col-8">
 
-                                 
+
                     <!-- PAGINATION -->
                     <?php UI::pagination($page, $total, $limit); ?>
-                    <!-- /PAGINATION --> 
-                    <br/> 
-                    
+                    <!-- /PAGINATION -->
+                    <br />
+
                     <?php if($total == 0) : ?>
 
-                        <div class="alert alert-info" role="alert">
-                        Sua busca não obteve resultado. Você pode refazer sua busca abaixo:<br/><br/>
-                            <form action="result.php">
-                                <div class="form-group">
-                                    <input type="text" name="search" class="form-control" id="searchQuery" aria-describedby="searchHelp" placeholder="Pesquise por termo ou autor">
-                                    <small id="searchHelp" class="form-text text-muted">Dica: Use * para busca por radical. Ex: biblio*.</small>
-                                    <small id="searchHelp" class="form-text text-muted">Dica 2: Para buscas exatas, coloque entre ""</small>
-                                    <small id="searchHelp" class="form-text text-muted">Dica 3: Você também pode usar operadores booleanos: AND, OR</small>
-                                </div>                       
-                                <button type="submit" class="btn btn-primary">Pesquisar</button>
-                                
-                            </form>
-                        </div>
-                        <br/><br/>                        
-                    
+                    <div class="alert alert-info" role="alert">
+                        Sua busca não obteve resultado. Você pode refazer sua busca abaixo:<br /><br />
+                        <form action="result.php">
+                            <div class="form-group">
+                                <input type="text" name="search" class="form-control" id="searchQuery"
+                                    aria-describedby="searchHelp" placeholder="Pesquise por termo ou autor">
+                                <small id="searchHelp" class="form-text text-muted">Dica: Use * para busca por radical.
+                                    Ex: biblio*.</small>
+                                <small id="searchHelp" class="form-text text-muted">Dica 2: Para buscas exatas, coloque
+                                    entre ""</small>
+                                <small id="searchHelp" class="form-text text-muted">Dica 3: Você também pode usar
+                                    operadores booleanos: AND, OR</small>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Pesquisar</button>
+
+                        </form>
+                    </div>
+                    <br /><br />
+
                     <?php endif; ?>
 
                     <!-- Resultados -->
-                        <?php foreach ($cursor["hits"]["hits"] as $r) : ?>
+                    <?php foreach ($cursor["hits"]["hits"] as $r) : ?>
 
-                        <div class="card">
-                            <div class="card-body">
-                                <h6 class="card-subtitle mb-2 text-muted"><?php echo $r["_source"]['type'];?>
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-subtitle mb-2 text-muted"><?php echo $r["_source"]['type'];?>
                                 <?php if (!empty($r["_source"]['source'])) : ?>
-                                    <h6 class="card-subtitle mb-2 text-muted"><?php echo $r["_source"]['source'];?>
+                                <h6 class="card-subtitle mb-2 text-muted"><?php echo $r["_source"]['source'];?>
                                     <?php (isset($r["_source"]["isPartOf"]["volume"]) ?  print_r(" - v.".$r["_source"]["isPartOf"]["volume"]) : "") ?>
                                     <?php (isset($r["_source"]["isPartOf"]["issue"]) ? print_r(" - n.".$r["_source"]["isPartOf"]["issue"]) : "") ?>
                                     <?php (isset($r["_source"]["isPartOf"]["initialPage"]) ? print_r(" - p.".$r["_source"]["isPartOf"]["initialPage"]) : "") ?>
-                                    </h6>
+                                </h6>
                                 <?php endif; ?>
-                                <h5 class="card-title"><a class="text-dark" href="<?php echo $r['_source']['url']; ?>"><?php echo $r["_source"]['name']; ?> (<?php echo $r["_source"]['datePublished'];?>)</a></h5>
+                                <h5 class="card-title"><a class="text-dark"
+                                        href="<?php echo $r['_source']['url']; ?>"><?php echo $r["_source"]['name']; ?>
+                                        (<?php echo $r["_source"]['datePublished'];?>)</a></h5>
                                 <?php if (!empty($r["_source"]["alternateName"])) : ?>
-                                <h6 class="card-subtitle mb-2 text-muted"><?php echo $r["_source"]['alternateName']; ?></h6>
+                                <h6 class="card-subtitle mb-2 text-muted"><?php echo $r["_source"]['alternateName']; ?>
+                                </h6>
                                 <?php endif; ?>
 
                                 <?php if (!empty($r["_source"]["author"])) : ?>
-                                    <?php 
+                                <?php 
                                         foreach ($r["_source"]["author"] as $autores) {
                                             if (!empty($autores["organization"]["name"])){
                                                 $authors_array[]=''.$autores["person"]["name"].' ('.$autores["organization"]["name"].')';
@@ -153,7 +162,7 @@ $mode = "reference";
                                 <?php endif; ?>
 
                                 <?php if (!empty($r["_source"]['about'])) : ?>
-                                    <?php 
+                                <?php 
                                         foreach ($r["_source"]['about'] as $assunto) {
                                             $assunto_array[]=''.$assunto.'';
                                         }
@@ -164,116 +173,152 @@ $mode = "reference";
                                 <?php endif; ?>
 
                                 <?php if (!empty($r["_source"]['description'])) : ?>
-                                    <p class="text-muted"><b>Resumo:</b> <?php echo $r["_source"]['description'] ?></p>
+                                <p class="text-muted"><b>Resumo:</b> <?php echo $r["_source"]['description'] ?></p>
                                 <?php endif; ?>
 
                                 <?php if (!empty($r["_source"]['publisher']['organization']['name'])) : ?>
-                                    <p class="text-muted"><b>Editora:</b> <?php echo $r["_source"]['publisher']['organization']['name'];?></p>
+                                <p class="text-muted"><b>Editora:</b>
+                                    <?php echo $r["_source"]['publisher']['organization']['name'];?></p>
                                 <?php endif; ?>
 
                                 <?php if (!empty($r["_source"]['ISBN'])) : ?>
-                                    <p class="text-muted"><b>ISBN:</b> <?php echo $r["_source"]['ISBN'][0];?></p>
-                                <?php endif; ?>                                                                                                 
-                                
-                                <?php if (!empty($r["_source"]['doi'])) : ?>
-                                    <p class="text-muted"><b>DOI:</b> <a href="http://dx.doi.org/<?php echo $r["_source"]['doi'];?>" target="_blank"><?php echo $r["_source"]['doi'];?></a></p>
+                                <p class="text-muted"><b>ISBN:</b> <?php echo $r["_source"]['ISBN'][0];?></p>
                                 <?php endif; ?>
 
-                                <p class="text-muted"><a class="btn btn-info" href="node.php?_id=<?php echo $r["_id"];?>" target="_blank"><b>Ver registro completo</b></a></p>
+                                <?php if (!empty($r["_source"]['doi'])) : ?>
+                                <p class="text-muted"><b>DOI:</b> <a
+                                        href="http://dx.doi.org/<?php echo $r["_source"]['doi'];?>"
+                                        target="_blank"><?php echo $r["_source"]['doi'];?></a></p>
+                                <?php endif; ?>
+
+                                <p class="text-muted"><a class="btn btn-info"
+                                        href="node.php?_id=<?php echo $r["_id"];?>" target="_blank"><b>Ver registro
+                                            completo</b></a></p>
 
                                 <?php if (!empty($r["_source"]['facebook']['facebook_total'])) : ?>
-                                    
-                                    <table class="table"><caption>Interações no Facebook</caption>        
-                                        <thead>
-                                            <tr>
-                                                <th>Reactions</th>
-                                                <th>Comentários</th>
-                                                <th>Compartilhamentos</th>                        
-                                                <th>Total</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td><?php echo $r["_source"]['facebook']['reaction_count'];?></td>
-                                                <td><?php echo $r["_source"]['facebook']['comment_count'];?></td>
-                                                <td><?php echo $r["_source"]['facebook']['share_count'];?></td>
-                                                <td><?php echo $r["_source"]['facebook']['facebook_total'];?></td>
-                                            </tr>
-                                        </tbody>   
-                                    </table><br/>
+
+                                <table class="table">
+                                    <caption>Interações no Facebook</caption>
+                                    <thead>
+                                        <tr>
+                                            <th>Reactions</th>
+                                            <th>Comentários</th>
+                                            <th>Compartilhamentos</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><?php echo $r["_source"]['facebook']['reaction_count'];?></td>
+                                            <td><?php echo $r["_source"]['facebook']['comment_count'];?></td>
+                                            <td><?php echo $r["_source"]['facebook']['share_count'];?></td>
+                                            <td><?php echo $r["_source"]['facebook']['facebook_total'];?></td>
+                                        </tr>
+                                    </tbody>
+                                </table><br />
                                 <?php endif; ?>
 
-<?php if (!empty($r["_source"]['references'])) : ?>
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#<?php echo substr($r["_id"], 1, 6) ?>">
-  Ver referências
-</button>
+                                <?php if (!empty($r["_source"]['references'])) : ?>
+                                <!-- Button trigger modal -->
+                                <button type="button" class="btn btn-primary" data-toggle="modal"
+                                    data-target="#<?php echo substr($r["_id"], 1, 6) ?>">
+                                    Ver referências
+                                </button>
 
-<!-- Modal -->
-<div class="modal fade" id="<?php echo substr($r["_id"], 1, 6) ?>" tabindex="-1" role="dialog" aria-labelledby="<?php echo $r["_id"] ?>Title" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="<?php echo $r["_id"] ?>Title">Referências</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <?php
+                                <!-- Modal -->
+                                <div class="modal fade" id="<?php echo substr($r["_id"], 1, 6) ?>" tabindex="-1"
+                                    role="dialog" aria-labelledby="<?php echo $r["_id"] ?>Title" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="<?php echo $r["_id"] ?>Title">Referências
+                                                </h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <?php
             foreach ($r["_source"]['references'] as $ref) {
                 echo ''.$ref["type"].': '.implode("; ", $ref["authors"]).'. '.$ref["name"].'. '.$ref["publisher"].', '.$ref["datePublished"].'.<br/>';
                 //print_r($ref);
                 //echo "<br/><br/>";
             } 
         ?>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<?php endif; ?>
-                                
-
-                                <?php if (!empty($r["_source"]['crossref']['message']['is-referenced-by-count'])) : ?>
-                                    
-                                <div class="alert alert-success" role="alert">
-                                    Quantidade de vezes em que o artigo foi citado: <?php echo $r["_source"]['crossref']['message']['is-referenced-by-count'] ?> (Fonte: Crossref API)
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-dismiss="modal">Fechar</button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <?php endif; ?>                                  
+                                <?php endif; ?>
+
+
+                                <?php if (!empty($r["_source"]['crossref']['message']['is-referenced-by-count'])) : ?>
+
+                                <div class="alert alert-success" role="alert">
+                                    Quantidade de vezes em que o artigo foi citado:
+                                    <?php echo $r["_source"]['crossref']['message']['is-referenced-by-count'] ?> (Fonte:
+                                    Crossref API)
+                                </div>
+
+                                <?php endif; ?>
+
+                                <?php if (!empty($r["_source"]['openalex']['cited_by_count'])) : ?>
+
+                                <div class="alert alert-success" role="alert">
+                                    Quantidade de vezes em que o artigo foi citado:
+                                    <?php echo $r["_source"]['openalex']['cited_by_count'] ?> (Fonte:
+                                    Openalex API)
+                                </div>
+
+                                <?php endif; ?>
 
                                 <?php if (!empty($r["_source"]['doi'])) : ?>
-                                        <div data-badge-popover="right" data-badge-type="1" data-doi="<?php echo $r["_source"]['doi'];?>" data-hide-no-mentions="true" class="altmetric-embed"></div>
-                                        <a href="https://plu.mx/plum/a/?doi=<?php echo $r["_source"]['doi'];?>" class="plumx-details" data-hide-when-empty="true" data-badge="true"></a>
-                                        <div data-badge-details="right" data-badge-type="2" data-doi="<?php echo $r["_source"]['doi'];?>" data-condensed="true" data-hide-no-mentions="true" class="altmetric-embed"></div>
-                                        <div><span class="__dimensions_badge_embed__" data-doi="<?php echo $r["_source"]['doi'];?>" data-hide-zero-citations="true" data-style="small_rectangle"></span></div></li>
+                                <div data-badge-popover="right" data-badge-type="1"
+                                    data-doi="<?php echo $r["_source"]['doi'];?>" data-hide-no-mentions="true"
+                                    class="altmetric-embed"></div>
+                                <a href="https://plu.mx/plum/a/?doi=<?php echo $r["_source"]['doi'];?>"
+                                    class="plumx-details" data-hide-when-empty="true" data-badge="true"></a>
+                                <div data-badge-details="right" data-badge-type="2"
+                                    data-doi="<?php echo $r["_source"]['doi'];?>" data-condensed="true"
+                                    data-hide-no-mentions="true" class="altmetric-embed"></div>
+                                <div><span class="__dimensions_badge_embed__"
+                                        data-doi="<?php echo $r["_source"]['doi'];?>" data-hide-zero-citations="true"
+                                        data-style="small_rectangle"></span></div>
+                                </li>
                                 <?php endif; ?>
 
                                 <?php if (isset($_SESSION["login"])) : ?>
-                                    <br/><br/>
-                                    <form class="form-signin" method="post" action="editor/index.php">
-                                        <?php
+                                <br /><br />
+                                <form class="form-signin" method="post" action="editor/index.php">
+                                    <?php
                                             $jsonRecord = json_encode($r["_source"]);                                        
                                         ?>
-                                        <input type="hidden" id="rppbci_id" name="rppbci_id" value="<?php echo $r["_id"] ?>">
-                                        <input type="hidden" id="record" name="record" value="<?php echo urlencode($jsonRecord) ?>">
-                                        <button class="btn btn-lg btn-warning btn-block" type="submit">Editar registro</button>
-                                        <p class="mt-5 mb-3 text-muted"><?= $errorMsg ?></p>
-                                    </form>
+                                    <input type="hidden" id="rppbci_id" name="rppbci_id"
+                                        value="<?php echo $r["_id"] ?>">
+                                    <input type="hidden" id="record" name="record"
+                                        value="<?php echo urlencode($jsonRecord) ?>">
+                                    <button class="btn btn-lg btn-warning btn-block" type="submit">Editar
+                                        registro</button>
+                                    <p class="mt-5 mb-3 text-muted"><?= $errorMsg ?></p>
+                                </form>
 
                                 <?php endif; ?>
 
-                                                                                                                                                    
-                            
-                            </div>
+                                <?php print("<pre>".print_r($r['_source'], true)."</pre>"); ?>
+
+
+
                         </div>
+                    </div>
 
 
-<!-- 
+                    <!-- 
 
                         <div class="uk-grid-divider uk-padding-small" uk-grid>
                             <div class="uk-width-1-5@m">
@@ -348,16 +393,16 @@ $mode = "reference";
                     <!-- /RECORDS -->
                     <!-- PAGINATION -->
                     <?php UI::pagination($page, $total, $limit); ?>
-                    <!-- /PAGINATION -->                                 
-                
-                </div>
-                <div class="col-4">        
+                    <!-- /PAGINATION -->
 
-                        <!-- Facetas - Início -->
-                        <h3 class="uk-panel-title">Refinar busca</h3>
-                            <hr>
-                            <ul class="uk-nav-default uk-nav-parent-icon" uk-nav="multiple: true">
-                            <?php
+                </div>
+                <div class="col-4">
+
+                    <!-- Facetas - Início -->
+                    <h3 class="uk-panel-title">Refinar busca</h3>
+                    <hr>
+                    <ul class="uk-nav-default uk-nav-parent-icon" uk-nav="multiple: true">
+                        <?php
                                 $facets = new facets();
                                 $facets->query = $result_get['query'];
 
@@ -380,9 +425,10 @@ $mode = "reference";
                                 $facets->facet("references.authors", 100, "Autores mais citados nas referências", null, "_term", $_GET);
                                 $facets->facet("references.datePublished", 100, "Ano de publicação das obras citadas nas referências", null, "_term", $_GET);
                                 $facets->facetExistsField("doi", 2, "Possui DOI preenchido?", null, "_term", $_GET);
+                                $facets->facetExistsField("openalex", 2, "Openalex?", null, "_term", $_GET);
                             ?>
-                            </ul>
-                            <hr>
+                    </ul>
+                    <hr>
 
                 </div>
             </div>
@@ -396,27 +442,27 @@ $mode = "reference";
 
 
 
-                </div>
             </div>
-            <hr class="uk-grid-divider">
+        </div>
+        <hr class="uk-grid-divider">
 
 
-<!-- FOOTER -->
-<?php require 'inc/footer.php'; ?>
-<!-- /FOOTER -->            
+        <!-- FOOTER -->
+        <?php require 'inc/footer.php'; ?>
+        <!-- /FOOTER -->
         </div>
 
 
 
         <script>
-        $('[data-uk-pagination]').on('select.uk.pagination', function(e, pageIndex){
+        $('[data-uk-pagination]').on('select.uk.pagination', function(e, pageIndex) {
             var url = window.location.href.split('&page')[0];
-            window.location=url +'&page='+ (pageIndex+1);
+            window.location = url + '&page=' + (pageIndex + 1);
         });
         </script>
         <script async src="https://badge.dimensions.ai/badge.js" charset="utf-8"></script>
 
 
-    </body>
-</html>
+</body>
 
+</html>

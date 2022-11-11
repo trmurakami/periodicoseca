@@ -772,7 +772,26 @@ function dimensionsAPI($doi)
     return $data;
     // Close request to clear up some resources
     curl_close($curl);    
-}   
+}
+
+function openalexAPI($doi)
+{
+    // Get cURL resource
+    $curl = curl_init();
+    // Set some options - we are passing in a useragent too here
+    curl_setopt_array($curl, array(
+        CURLOPT_RETURNTRANSFER => 1,
+        CURLOPT_URL => 'https://api.openalex.org/works/https://doi.org/'.$doi.'',
+        CURLOPT_USERAGENT => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.75.14 (KHTML, like Gecko) Version/7.0.3 Safari/7046A194A'
+    )
+    );
+    // Send the request & save response to $resp
+    $resp = curl_exec($curl);
+    $data = json_decode($resp, true);
+    return $data;
+    // Close request to clear up some resources
+    curl_close($curl);    
+}  
 
 class Homepage
 {
@@ -919,7 +938,18 @@ class Homepage
         }';
         $response = Elasticsearch::search(null, 0, $query);
         return $response["aggregations"]["total"]["value"];
-    }      
+    }
+    
+    static function sumFieldAggOpenalex()
+    {
+        $query = '{
+            "aggs" : {
+                "total" : { "sum" : { "field" : "openalex.cited_by_count" } }
+            }
+        }';
+        $response = Elasticsearch::search(null, 0, $query);
+        return $response["aggregations"]["total"]["value"];
+    }    
 }
 
 ?>
