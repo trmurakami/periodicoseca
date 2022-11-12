@@ -809,7 +809,7 @@ class Homepage
         $params["index"] = $index;
         $params["size"] = 0;
         $query["query"]["bool"]["must"]["query_string"]["query"] = "*";
-        $query["sort"]["facebook.facebook_total"] = "desc"; 
+        $query["sort"]["openalex.cited_by_count"] = "desc"; 
         $query["sort"]["datePublished.keyword"] = "desc";        
         $params["body"] = $query; 
         $response = Elasticsearch::search(null, 10, $query);
@@ -840,8 +840,8 @@ class Homepage
                         echo '<p class="card-text"><small class="text-muted">'.implode(" | ", $autArray).'</small></p>';
                         unset($autArray);
                     };
-                    if (!empty($r["_source"]['facebook'])) {
-                        echo '<p class="card-text"><small class="text-muted">Total de interações no Facebook: '.$r["_source"]['facebook']['facebook_total'].'</small></p>';
+                    if (!empty($r["_source"]['openalex']['cited_by_count'])) {
+                        echo '<p class="card-text"><small class="text-muted">Citações no Openalex: '.$r["_source"]['openalex']['cited_by_count'].'</small></p>';
                     };
                                         
 

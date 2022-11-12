@@ -137,9 +137,16 @@ $mode = "reference";
                                     <?php (isset($r["_source"]["isPartOf"]["initialPage"]) ? print_r(" - p.".$r["_source"]["isPartOf"]["initialPage"]) : "") ?>
                                 </h6>
                                 <?php endif; ?>
-                                <h5 class="card-title"><a class="text-dark"
+                                <h5 class="card-title">
+                                    <a class="text-dark"
                                         href="<?php echo $r['_source']['url']; ?>"><?php echo $r["_source"]['name']; ?>
-                                        (<?php echo $r["_source"]['datePublished'];?>)</a></h5>
+                                        (<?php echo $r["_source"]['datePublished'];?>)
+                                    </a>
+                                    <?php if (!empty($r["_source"]['openalex']['id'])) : ?>
+                                    <a href="<?php echo $r["_source"]['openalex']['id'] ?>" target="_blank"><img
+                                            src="inc/images/openalex400x400.jpg" width="20" height="20"></a>
+                                    <?php endif; ?>
+                                </h5>
                                 <?php if (!empty($r["_source"]["alternateName"])) : ?>
                                 <h6 class="card-subtitle mb-2 text-muted"><?php echo $r["_source"]['alternateName']; ?>
                                 </h6>
@@ -169,6 +176,17 @@ $mode = "reference";
                                         $array_assunto = implode("; ",$assunto_array);
                                         unset($assunto_array);
                                         echo '<p class="text-muted"><b>Assuntos:</b> '.''. $array_assunto.'</p>';
+                                    ?>
+                                <?php endif; ?>
+
+                                <?php if (!empty($r["_source"]['openalex']['concepts'])) : ?>
+                                <?php 
+                                        foreach ($r["_source"]['openalex']['concepts'] as $concept) {
+                                            $concept_array[]=''.$concept['display_name'].'';
+                                        }
+                                        $array_concept = implode("; ", $concept_array);
+                                        unset($concept_array);
+                                        echo '<p class="text-muted"><b>Conceitos definidos pelo Openalex:</b> '.''. $array_concept.'</p>';
                                     ?>
                                 <?php endif; ?>
 
@@ -240,12 +258,12 @@ $mode = "reference";
                                             </div>
                                             <div class="modal-body">
                                                 <?php
-            foreach ($r["_source"]['references'] as $ref) {
-                echo ''.$ref["type"].': '.implode("; ", $ref["authors"]).'. '.$ref["name"].'. '.$ref["publisher"].', '.$ref["datePublished"].'.<br/>';
-                //print_r($ref);
-                //echo "<br/><br/>";
-            } 
-        ?>
+                                                    foreach ($r["_source"]['references'] as $ref) {
+                                                        echo ''.$ref["type"].': '.implode("; ", $ref["authors"]).'. '.$ref["name"].'. '.$ref["publisher"].', '.$ref["datePublished"].'.<br/>';
+                                                        //print_r($ref);
+                                                        //echo "<br/><br/>";
+                                                    }
+                                                ?>
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary"
@@ -310,7 +328,7 @@ $mode = "reference";
 
                                 <?php endif; ?>
 
-                                <?php print("<pre>".print_r($r['_source'], true)."</pre>"); ?>
+                                <?php //print("<pre>".print_r($r['_source'], true)."</pre>"); ?>
 
 
 
@@ -414,7 +432,8 @@ $mode = "reference";
                                 $facets->facet("source", 100, "Título do periódico", null, "_term", $_GET);
                                 $facets->facet("datePublished", 120, "Ano de publicação", "desc", "_term", $_GET);
                                 $facets->facet("author.person.name", 120, "Autores", null, "_term", $_GET);
-                                $facets->facet("author.organization.name", 120, "Afiliação", null, "_term", $_GET);                        
+                                $facets->facet("author.organization.name", 120, "Afiliação", null, "_term", $_GET);
+                                $facets->facet("openalex.authorships.raw_affiliation_string", 120, "Afiliação obtida pelo Openalex", null, "_term", $_GET);                       
                                 $facets->facet("originalType", 10, "Seções", null, "_term", $_GET);                
                                 $facets->facet("about", 100, "Assuntos", null, "_term", $_GET);
                                 $facets->facet("publisher.organization.name", 100, "Editora", null, "_term", $_GET);
@@ -424,6 +443,7 @@ $mode = "reference";
                                 $facets->facet("isPartOf.ISSN", 100, "ISSN", null, "_term", $_GET);
                                 $facets->facet("references.authors", 100, "Autores mais citados nas referências", null, "_term", $_GET);
                                 $facets->facet("references.datePublished", 100, "Ano de publicação das obras citadas nas referências", null, "_term", $_GET);
+                                $facets->facet("openalex.concepts.display_name", 100, "Openalex Concepts", null, "_term", $_GET);
                                 $facets->facetExistsField("doi", 2, "Possui DOI preenchido?", null, "_term", $_GET);
                                 $facets->facetExistsField("openalex", 2, "Openalex?", null, "_term", $_GET);
                             ?>

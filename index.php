@@ -140,13 +140,14 @@ require 'inc/functions.php';
                         Total de registros: <?php echo Admin::totalRecords(); ?>
                     </ul>
                     <ul class="list-group">
-                        Citações via Crossref API: <a
-                            href="result.php?search=crossref.message.is-referenced-by-count:[1 TO *]"><?php echo Homepage::sumFieldAggCrossref(); ?></a>
-                    </ul>
-                    <ul class="list-group">
                         Citações via Openalex API: <a
                             href="result.php?search=openalex.cited_by_count:[1 TO *]"><?php echo Homepage::sumFieldAggOpenalex(); ?></a>
                     </ul>
+                    <ul class="list-group">
+                        Citações via Crossref API: <a
+                            href="result.php?search=crossref.message.is-referenced-by-count:[1 TO *]"><?php echo Homepage::sumFieldAggCrossref(); ?></a>
+                    </ul>
+
                 </div>
                 <div class="col-md-4">
                     <h2>Interações no facebook</h2>
@@ -157,7 +158,7 @@ require 'inc/functions.php';
             </div>
 
             <hr>
-            <h1>Registros com mais interações</h1>
+            <h1>Registros com mais citações no <a href="https://openalex.org" target="_blank">Openalex</a></h1>
 
             <?php Homepage::getLastRecords();?>
 
