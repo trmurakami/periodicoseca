@@ -168,6 +168,25 @@ $mode = "reference";
                                     ?>
                                 <?php endif; ?>
 
+                                <?php if (!empty($r['_source']['openalex']['authorships'])) : ?>
+                                <?php 
+                                        echo '<p class="text-muted"><b>Autores no Openalex:</b>';
+                                        echo '<ul>';
+                                        foreach ($r['_source']['openalex']['authorships'] as $author) {
+                                            //echo "<pre>".print_r($author, true)."</pre>";
+                                            
+                                             echo '<li>'.$author['author']['display_name'].'
+                                            '.(($author['raw_affiliation_string']) ? '('.$author['raw_affiliation_string'].')' : '').'
+                                            '.(($author['author']['orcid']) ? '<a href="'.$author['author']['orcid'].'" target="_blank"><img src="inc/images/240px-ORCID_iD.svg.png" width="20" height="20"></a>' : '').'
+                                            <a href="'.$author['author']['id'].'" target="_blank">
+                                                <img src="inc/images/openalex400x400.jpg" width="20" height="20">
+                                            </a></li>';                                           
+                                        }
+                                        echo '</ul>';
+                                        
+                                    ?>
+                                <?php endif; ?>
+
                                 <?php if (!empty($r["_source"]['about'])) : ?>
                                 <?php 
                                         foreach ($r["_source"]['about'] as $assunto) {
@@ -433,7 +452,8 @@ $mode = "reference";
                                 $facets->facet("datePublished", 120, "Ano de publicação", "desc", "_term", $_GET);
                                 $facets->facet("author.person.name", 120, "Autores", null, "_term", $_GET);
                                 $facets->facet("author.organization.name", 120, "Afiliação", null, "_term", $_GET);
-                                $facets->facet("openalex.authorships.raw_affiliation_string", 120, "Afiliação obtida pelo Openalex", null, "_term", $_GET);                       
+                                $facets->facet("openalex.authorships.raw_affiliation_string", 120, "Afiliação obtida pelo Openalex", null, "_term", $_GET);
+                                $facets->facet("openalex.authorships.institutions.display_name", 120, "Afiliação normalizada obtida pelo Openalex", null, "_term", $_GET);                       
                                 $facets->facet("originalType", 10, "Seções", null, "_term", $_GET);                
                                 $facets->facet("about", 100, "Assuntos", null, "_term", $_GET);
                                 $facets->facet("publisher.organization.name", 100, "Editora", null, "_term", $_GET);
