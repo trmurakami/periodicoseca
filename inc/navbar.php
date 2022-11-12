@@ -17,11 +17,10 @@
             </li>
         </div>
 
-        <?php if (!isset($_SESSION["login"])) : ?>
-        <!-- Button trigger modal -->
+        <!-- < ?php if (!isset($_SESSION["login"])) : ?>
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#login">
             Login
         </button>
-        <?php endif; ?>
+        < ?php endif; ?> -->
     </div>
 </nav>

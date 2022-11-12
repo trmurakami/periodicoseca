@@ -465,7 +465,7 @@ $mode = "reference";
                                 $facets->facet("references.datePublished", 100, "Ano de publicação das obras citadas nas referências", null, "_term", $_GET);
                                 $facets->facet("openalex.concepts.display_name", 100, "Openalex Concepts", null, "_term", $_GET);
                                 $facets->facetExistsField("doi", 2, "Possui DOI preenchido?", null, "_term", $_GET);
-                                $facets->facetExistsField("openalex", 2, "Openalex?", null, "_term", $_GET);
+                                $facets->facetExistsField("openalex.id", 2, "Openalex?", null, "_term", $_GET);
                             ?>
                     </ul>
                     <hr>
