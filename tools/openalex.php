@@ -26,8 +26,13 @@ foreach ($cursor["hits"]["hits"] as $r) {
     $openalex_result = openalexAPI($r["_source"]["doi"]);
     unset($openalex_result['abstract_inverted_index']);
     //print("<pre>".print_r($openalex_result, true)."</pre>");
-    $body["doc"]["openalex"] = $openalex_result;
+    if (empty($openalex_result)) {
+        $body["doc"]["openalex"]['empty'] = true;
+    } else {
+        $body["doc"]["openalex"] = $openalex_result;
+    }    
     $body["doc_as_upsert"] = true;
+    //print("<pre>".print_r($body, true)."</pre>");
     $upsert_openalex = Elasticsearch::update($r["_id"], $body);
     print("<pre>".print_r($upsert_openalex, true)."</pre>");
     //sleep(11);

@@ -32,7 +32,7 @@ if (isset($_GET["sort"])) {
     $result_get['query']["sort"][$_GET["sort"]]["order"] = "desc";
     $result_get['query']["sort"][$_GET["sort"]]["mode"] = "max";
 } else {
-    $result_get['query']["sort"]['facebook.facebook_total'] = "desc";
+    $result_get['query']["sort"]['openalex.cited_by_count'] = "desc";
     $result_get['query']["sort"]['datePublished.keyword'] = "desc";
 }
 $params["body"] = $result_get['query'];
