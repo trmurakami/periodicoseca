@@ -44,8 +44,8 @@
     <!-- /NAV -->
 
     <main role="main">
-        <div class="px-5 py-5 text-center background">
-            <h1 class="display-5 fw-bold"><?php echo $branch; ?></h1>
+        <div class="px-5 py-5 text-center background m-5">
+            <h1 class="display-5 fw-bold p-5"><?php echo $branch; ?></h1>
             <div class="col-lg-6 mx-auto">
                 <p class="lead mb-4"><?php echo $branch_description; ?></p>
                 <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
@@ -93,12 +93,14 @@
                         </li>
                     </ul>
                 </div>
+                <!--
                 <div class="col">
                     <h3 class="fs-2">Interações no facebook</h3>
                     <ul class="list-group list-group-flush">
-                        <?php Homepage::sumFieldAggFacebook(); ?>
+                        < ?php Homepage::sumFieldAggFacebook(); ?>
                     </ul>
                 </div>
+                -->
             </div>
 
             <hr class="mt-5">
