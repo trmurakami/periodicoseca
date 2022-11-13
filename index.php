@@ -48,23 +48,23 @@
             <h1 class="display-5 fw-bold p-5"><?php echo $branch; ?></h1>
             <div class="col-lg-6 mx-auto">
                 <p class="lead mb-4"><?php echo $branch_description; ?></p>
-                <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-                    <form action="result.php">
-                        <div class="form-group">
-                            <input type="text" name="search" class="form-control" id="searchQuery"
-                                aria-describedby="searchHelp" placeholder="Pesquise por termo ou autor">
-                            <ul>
-                                <li><small id="searchHelp" class="form-text text-muted">Dica: Use * para busca por
-                                        radical. Ex: biblio*.</small></li>
-                                <li><small id="searchHelp" class="form-text text-muted">Dica 2: Para buscas exatas,
-                                        coloque entre ""</small></li>
-                                <li><small id="searchHelp" class="form-text text-muted">Dica 3: Você também pode usar
-                                        operadores booleanos: AND, OR</small></li>
-                            </ul>
-                        </div>
-                        <button type="submit" class="btn btn-outline-primary btn-lg px-4">Pesquisar</button>
-                    </form>
-                </div>
+
+                <form action="result.php">
+                    <div class="form-group">
+                        <input type="text" name="search" class="form-control" id="searchQuery"
+                            aria-describedby="searchHelp" placeholder="Pesquise por termo ou autor">
+                        <ul>
+                            <li><small id="searchHelp" class="form-text text-muted">Dica: Use * para busca por
+                                    radical. Ex: biblio*.</small></li>
+                            <li><small id="searchHelp" class="form-text text-muted">Dica 2: Para buscas exatas,
+                                    coloque entre ""</small></li>
+                            <li><small id="searchHelp" class="form-text text-muted">Dica 3: Você também pode usar
+                                    operadores booleanos: AND, OR</small></li>
+                        </ul>
+                    </div>
+                    <button type="submit" class="btn btn-outline-primary btn-lg px-4">Pesquisar</button>
+                </form>
+
             </div>
         </div>
 
