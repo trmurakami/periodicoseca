@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Classes file with main functions 
  */
@@ -51,7 +52,7 @@ class Elasticsearch
         global $client;
         $params = [];
 
-        if (strlen($alternative_index) > 0 ) {
+        if (strlen($alternative_index) > 0) {
             $params["index"] = $alternative_index;
         } else {
             $params["index"] = $index;
@@ -154,8 +155,7 @@ class Elasticsearch
     static function storeRecord($_id, $body)
     {
         $response = Elasticsearch::update($_id, $body);
-        echo '<br/>Resultado: '.($response["_id"]).', '.($response["result"]).', '.($response["_shards"]['successful']).'<br/>';
-
+        echo '<br/>Resultado: ' . ($response["_id"]) . ', ' . ($response["result"]) . ', ' . ($response["_shards"]['successful']) . '<br/>';
     }
 
     /**
@@ -190,8 +190,8 @@ class Elasticsearch
                         'analyzer' => [
                             'rebuilt_portuguese' => [
                                 'tokenizer' => 'standard',
-                                'filter' =>  [ 
-                                    'lowercase', 
+                                'filter' =>  [
+                                    'lowercase',
                                     'my_ascii_folding',
                                     'portuguese_stop',
                                     'portuguese_stemmer'
@@ -204,8 +204,8 @@ class Elasticsearch
         ];
         $responseCreateIndex = $client->indices()->create($createIndexParams);
     }
-    
-  
+
+
     /**
      * Cria o mapeamento
      *
@@ -240,7 +240,7 @@ class Elasticsearch
                                     'ignore_above' => 256
                                 ]
                             ]
-                        ],                        
+                        ],
                         'author' => [
                             'properties' => [
                                 'person' => [
@@ -253,7 +253,7 @@ class Elasticsearch
                                                     'type' => 'keyword',
                                                     'ignore_above' => 256
                                                 ]
-                                            ]                                            
+                                            ]
                                         ]
                                     ]
                                 ],
@@ -267,7 +267,7 @@ class Elasticsearch
                                                     'type' => 'keyword',
                                                     'ignore_above' => 256
                                                 ]
-                                            ]                                            
+                                            ]
                                         ]
                                     ]
                                 ]
@@ -296,7 +296,7 @@ class Elasticsearch
                         'description' => [
                             'type' => 'text',
                             'analyzer' => 'portuguese'
-                        ],                                                                         
+                        ],
                         'datePublished' => [
                             'type' => 'text',
                             'fields' => [
@@ -312,22 +312,21 @@ class Elasticsearch
                                     'type' => 'integer'
                                 ]
                             ]
-                        ]                                      
+                        ]
                     ]
                 ]
             ];
         }
         // Update the index mapping
         $client->indices()->putMapping($mappingsParams);
-    }      
-
+    }
 }
 
 class Requests
 {
 
     static function getParser($get)
-    {        
+    {
         $query = [];
 
         /* Pagination */
@@ -349,10 +348,9 @@ class Requests
             foreach ($get['filter'] as $filter) {
                 $filter_array = explode(":", $filter);
                 $filter_array_term = str_replace('"', "", (string)$filter_array[1]);
-                $query["query"]["bool"]["filter"][$i_filter]["term"][(string)$filter_array[0].".keyword"] = $filter_array_term;
+                $query["query"]["bool"]["filter"][$i_filter]["term"][(string)$filter_array[0] . ".keyword"] = $filter_array_term;
                 $i_filter++;
             }
-
         }
 
         if (!empty($get['notFilter'])) {
@@ -360,7 +358,7 @@ class Requests
             foreach ($get['notFilter'] as $notFilter) {
                 $notFilterArray = explode(":", $notFilter);
                 $notFilterArrayTerm = str_replace('"', "", (string)$notFilterArray[1]);
-                $query["query"]["bool"]["must_not"][$i_notFilter]["term"][(string)$notFilterArray[0].".keyword"] = $notFilterArrayTerm;
+                $query["query"]["bool"]["must_not"][$i_notFilter]["term"][(string)$notFilterArray[0] . ".keyword"] = $notFilterArrayTerm;
                 $i_notFilter++;
             }
         }
@@ -372,12 +370,11 @@ class Requests
             $queryArray["query_string"]["fields"] = ["name", "alternateName", "author.person.name", "author.organization.name", "about", "source", "description"];
             //$queryArray["multi_match"]["operator"] = "and";
             //$queryArray["query_string"]["analyzer"] = "portuguese";
-                    
-        } else { 
-            $queryArray["query_string"]["query"] = "*";             
 
+        } else {
+            $queryArray["query_string"]["query"] = "*";
         }
-        
+
         if (!empty($get['initialYear']) || !empty($get['finalYear'])) {
             if (!empty($get['initialYear'])) {
                 $initialYear = $get['initialYear'];
@@ -390,26 +387,25 @@ class Requests
             } else {
                 $finalYear = "*";
             }
-            $dateString = 'datePublished:['.$initialYear.' TO '.$finalYear.']';
+            $dateString = 'datePublished:[' . $initialYear . ' TO ' . $finalYear . ']';
             $query["query"]["bool"]["must"]["query_string"]["query"] = $dateString;
-        }           
+        }
 
         if (!empty($get['range'])) {
             $query["query"]["bool"]["must"]["query_string"]["query"] = $get['range'][0];
-        }         
-        
+        }
+
         if (isset($query["query"]["bool"])) {
             $query["query"]["bool"]["must"] = $queryArray;
         } else {
             $query["query"] = $queryArray;
-        }        
+        }
 
         //echo "<br/><br/><br/>";
         //print("<pre>".print_r($query, true)."</pre>");
-       
+
         return compact('page', 'query', 'limit', 'skip');
     }
-
 }
 
 class Facets
@@ -419,7 +415,7 @@ class Facets
         global $url_base;
 
         if (isset($get_search["page"])) {
-            unset($get_search["page"]);            
+            unset($get_search["page"]);
         }
 
         $query = $this->query;
@@ -434,94 +430,105 @@ class Facets
 
         $response = Elasticsearch::search(null, 0, $query, $alternative_index);
 
-        $result_count = count($response["aggregations"]["counts"]["buckets"]);        
+        $result_count = count($response["aggregations"]["counts"]["buckets"]);
 
         if ($result_count == 0) {
-
         } elseif (($result_count != 0) && ($result_count < 5)) {
 
-            echo '<a href="#" class="list-group-item list-group-item-action active">'.$field_name.'</a>';
+            echo '<div class="accordion-item">';
+            echo '<h2 class="accordion-header" id="' . hash('crc32', $field_name) . '"></h2>';
+            echo '
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse' . hash('crc32', $field_name) . '" aria-expanded="true" aria-controls="collapse' . hash('crc32', $field_name) . '">
+            ' . $field_name . '
+            </button>
+            ';
+            echo '<div id="collapse' . hash('crc32', $field_name) . '" class="accordion-collapse collapse show" aria-labelledby="' . hash('crc32', $field_name) . '" data-bs-parent="#facets">';
+            echo '<div class="accordion-body">';
+
+            //echo '<a href="#" class="list-group-item list-group-item-action active">' . $field_name . '</a>';
             echo '<ul class="list-group list-group-flush">';
             foreach ($response["aggregations"]["counts"]["buckets"] as $facets) {
                 if ($facets['key'] == "Não preenchido") {
-                    echo '<li>';
-                    echo '<div uk-grid>
-                            <div class="uk-width-expand" style="color:#333">
-                                <a href="result.php?'.http_build_query($get_search).'&search=(-_exists_:'.$field.')">'.$facets['key'].'</a>
-                            </div>
-                            <div class="uk-width-auto" style="color:#333">
-                                <span class="uk-badge" style="font-size:80%">'.number_format($facets['doc_count'], 0, ',', '.').'</span>
-                            </div>';
-                    echo '</div></li>';
+                    echo '<li class="list-group-item d-flex justify-content-between align-items-center">';
+                    echo '<a href="result.php?' . http_build_query($get_search) . '&search=(-_exists_:' . $field . ')">' . $facets['key'] . '</a>
+                        <span class="badge bg-primary">' . number_format($facets['doc_count'], 0, ',', '.') . '</span>';
+                    echo '</li>';
                 } else {
                     echo '<li class="list-group-item d-flex justify-content-between align-items-center">';
-                    echo '<a href="result.php?'.http_build_query($get_search).'&filter[]='.$field.':&quot;'.str_replace('&', '%26', $facets['key']).'&quot;"  title="E" style="color:#0040ff;font-size: 90%">'.$facets['key'].'</a>
-                    <span class="badge badge-primary badge-pill">'.number_format($facets['doc_count'], 0, ',', '.').'</span>';
-                    echo '</li>'; 
+                    echo '<a href="result.php?' . http_build_query($get_search) . '&filter[]=' . $field . ':&quot;' . str_replace('&', '%26', $facets['key']) . '&quot;"  title="E" style="color:#0040ff;font-size: 90%">' . $facets['key'] . '</a>
+                    <span class="badge bg-primary">' . number_format($facets['doc_count'], 0, ',', '.') . '</span>';
+                    echo '</li>';
                 }
-
             };
             echo '</ul>';
-
+            echo '</div>';
+            echo '</div>';
+            echo '</div>';
         } else {
             $i = 0;
-            echo '<a href="#" class="list-group-item list-group-item-action active">'.$field_name.'</a>';
-            echo '<ul class="list-group list-group-flush">';  
+            echo '<div class="accordion-item">';
+            echo '<h2 class="accordion-header" id="' . hash('crc32', $field_name) . '"></h2>';
+            echo '
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse' . hash('crc32', $field_name) . '" aria-expanded="true" aria-controls="collapse' . hash('crc32', $field_name) . '">
+            ' . $field_name . '
+            </button>
+            ';
+            echo '<div id="collapse' . hash('crc32', $field_name) . '" class="accordion-collapse collapse show" aria-labelledby="' . hash('crc32', $field_name) . '" data-bs-parent="#facets">';
+            echo '<div class="accordion-body">';
+            echo '<ul class="list-group list-group-flush">';
             while ($i < 5) {
                 if ($response["aggregations"]["counts"]["buckets"][$i]['key'] == "Não preenchido") {
-                    echo '<li>';
-                    echo '<div uk-grid>
-                            <div class="uk-width-expand uk-text-small" style="color:#333">
-                                <a href="result.php?'.http_build_query($get_search).'&search=(-_exists_:'.$field.')">'.$response["aggregations"]["counts"]["buckets"][$i]['key'].'</a>
-                            </div>
-                            <div class="uk-width-auto" style="color:#333">
-                            <span class="uk-badge" style="font-size:80%">'.number_format($response["aggregations"]["counts"]["buckets"][$i]['doc_count'], 0, ',', '.').'</span>
-                            </div>';
-                    echo '</div></li>';
+                    echo '<li class="list-group-item d-flex justify-content-between align-items-center">';
+                    echo '<a href="result.php?' . http_build_query($get_search) . '&search=(-_exists_:' . $field . ')">' . $response["aggregations"]["counts"]["buckets"][$i]['key'] . '</a>
+                    <span class="badge bg-primary">' . number_format($response["aggregations"]["counts"]["buckets"][$i]['doc_count'], 0, ',', '.') . '</span>';
+                    echo '</li>';
                 } else {
                     echo '<li class="list-group-item d-flex justify-content-between align-items-center">';
-                    echo '<a href="result.php?'.http_build_query($get_search).'&filter[]='.$field.':&quot;'.str_replace('&', '%26', $response["aggregations"]["counts"]["buckets"][$i]['key']).'&quot;"  title="E" style="color:#0040ff;font-size: 90%">'.$response["aggregations"]["counts"]["buckets"][$i]['key'].'</a>
-                    <span class="badge badge-primary badge-pill">'.number_format($response["aggregations"]["counts"]["buckets"][$i]['doc_count'], 0, ',', '.').'</span>';
-                    echo '</li>';                   
+                    echo '<a href="result.php?' . http_build_query($get_search) . '&filter[]=' . $field . ':&quot;' . str_replace('&', '%26', $response["aggregations"]["counts"]["buckets"][$i]['key']) . '&quot;"  title="E" style="color:#0040ff;font-size: 90%">' . $response["aggregations"]["counts"]["buckets"][$i]['key'] . '</a>
+                    <span class="badge bg-primary">' . number_format($response["aggregations"]["counts"]["buckets"][$i]['doc_count'], 0, ',', '.') . '</span>';
+                    echo '</li>';
                 }
-                $i++;                
+                $i++;
             }
 
 
             echo '<li class="list-group-item d-flex justify-content-between align-items-center">';
-            echo '<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#'.str_replace(".", "", $field).'Modal">mais >>></button>  ';
+
+            echo '<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal' . hash('crc32', $field_name) . '">mais >>></button>';
             echo '</li>';
             echo '</ul>';
-            echo '<div class="modal fade" id="'.str_replace(".", "", $field).'Modal" tabindex="-1" role="dialog" aria-labelledby="'.str_replace(".", "", $field).'ModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
+            echo '</div>';
+            echo '</div>';
+            echo '</div>';
+
+
+            echo '
+            <div class="modal fade" id="modal' . hash('crc32', $field_name) . '" tabindex="-1" aria-labelledby="modal' . hash('crc32', $field_name) . 'Label" aria-hidden="true">
+            <div class="modal-dialog">
                 <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="'.$field.'ModalLabel">'.$field_name.'</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
+                    <h1 class="modal-title fs-5" id="modal' . hash('crc32', $field_name) . 'Label">' . $field_name . '</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <ul class="list-group list-group-flush">';
-                    foreach ($response["aggregations"]["counts"]["buckets"] as $facets) {
-                        echo '<li class="list-group-item d-flex justify-content-between align-items-center">';
-                        echo '<a href="result.php?'.http_build_query($get_search).'&filter[]='.$field.':&quot;'.str_replace('&', '%26', $facets['key']).'&quot;"  title="E" style="color:#0040ff;font-size: 90%">'.$facets['key'].'</a>
-                            <span class="badge badge-primary badge-pill">'.number_format($facets['doc_count'], 0, ',', '.').'</span>';
-                        echo '</li>';
-                    }
-            echo '</ul>';
-             echo '
+
+            foreach ($response["aggregations"]["counts"]["buckets"] as $facets) {
+                echo '<li class="list-group-item d-flex justify-content-between align-items-center">';
+                echo '<a href="result.php?' . http_build_query($get_search) . '&filter[]=' . $field . ':&quot;' . str_replace('&', '%26', $facets['key']) . '&quot;"  title="E" style="color:#0040ff;font-size: 90%">' . $facets['key'] . '</a>
+                            <span class="badge bg-primary">' . number_format($facets['doc_count'], 0, ',', '.') . '</span>';
+                echo '</li>';
+            }
+
+            echo '</ul></div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
                 </div>
                 </div>
-            </div></div></div>
-            ';         
-
-
+            </div>
+            </div>';
         }
         echo '</li>';
-
     }
 
     public function facetExistsField($field, $size, $field_name, $sort, $sort_type, $get_search, $open = false)
@@ -529,7 +536,7 @@ class Facets
         global $url_base;
 
         if (isset($get_search["page"])) {
-            unset($get_search["page"]);            
+            unset($get_search["page"]);
         }
 
         $query = $this->query;
@@ -538,24 +545,37 @@ class Facets
 
         $response = Elasticsearch::search(null, 0, $query);
 
+        echo '<div class="accordion-item">';
+        echo '<h2 class="accordion-header" id="' . hash('crc32', $field_name) . '"></h2>';
+        echo '
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse' . hash('crc32', $field_name) . '" aria-expanded="true" aria-controls="collapse' . hash('crc32', $field_name) . '">
+        ' . $field_name . '
+        </button>
+        ';
+        echo '<div id="collapse' . hash('crc32', $field_name) . '" class="accordion-collapse collapse show" aria-labelledby="' . hash('crc32', $field_name) . '" data-bs-parent="#facets">';
+        echo '<div class="accordion-body">';
 
-        echo '<a href="#" class="list-group-item list-group-item-action active">'.$field_name.'</a>';
+
         echo '<ul class="list-group list-group-flush">';
 
         echo '<li class="list-group-item d-flex justify-content-between align-items-center">';
-        echo '<a href="result.php?search=_exists_:'.$field.'" style="color:#0040ff;font-size: 90%">Está preenchido</a>
-        <span class="badge badge-primary badge-pill">'.number_format($response["aggregations"]["field_exists"]["doc_count"], 0, ',', '.').'</span>';
+        echo '<a href="result.php?search=_exists_:' . $field . '" style="color:#0040ff;font-size: 90%">Está preenchido</a>
+        <span class="badge bg-primary">' . number_format($response["aggregations"]["field_exists"]["doc_count"], 0, ',', '.') . '</span>';
         echo '</li>';
 
         echo '<li class="list-group-item d-flex justify-content-between align-items-center">';
-        echo '<a href="result.php?search=-_exists_:'.$field.'" style="color:#0040ff;font-size: 90%">Não está preenchido</a>
-        <span class="badge badge-primary badge-pill">'.number_format($response["aggregations"]["field_not_exists"]["doc_count"], 0, ',', '.').'</span>';
+        echo '<a href="result.php?search=-_exists_:' . $field . '" style="color:#0040ff;font-size: 90%">Não está preenchido</a>
+        <span class="badge bg-primary">' . number_format($response["aggregations"]["field_not_exists"]["doc_count"], 0, ',', '.') . '</span>';
         echo '</li>';
 
         echo '</ul>';
-    }    
 
-    public function rebuild_facet($field,$size,$nome_do_campo)
+        echo '</div>';
+        echo '</div>';
+        echo '</div>';
+    }
+
+    public function rebuild_facet($field, $size, $nome_do_campo)
     {
         $query = $this->query;
         $query["aggs"]["counts"]["terms"]["field"] = "$field.keyword";
@@ -567,20 +587,19 @@ class Facets
         $response = Elasticsearch::elasticSearch(null, 0, $query);
 
         echo '<li class="uk-parent">';
-        echo '<a href="#" style="color:#333">'.$nome_do_campo.'</a>';
+        echo '<a href="#" style="color:#333">' . $nome_do_campo . '</a>';
         echo ' <ul class="uk-nav-sub">';
         foreach ($response["aggregations"]["counts"]["buckets"] as $facets) {
             $termCleaned = str_replace("&", "*", $facets['key']);
             echo '<li">';
             echo "<div uk-grid>";
             echo '<div class="uk-width-2-3 uk-text-small" style="color:#333">';
-            echo '<a href="admin/autoridades.php?term=&quot;'.$termCleaned.'&quot;" style="color:#0040ff;font-size: 90%">'.$termCleaned.' ('.number_format($facets['doc_count'], 0, ',', '.').')</a>';
+            echo '<a href="admin/autoridades.php?term=&quot;' . $termCleaned . '&quot;" style="color:#0040ff;font-size: 90%">' . $termCleaned . ' (' . number_format($facets['doc_count'], 0, ',', '.') . ')</a>';
             echo '</div>';
             echo '</li>';
         };
         echo   '</ul>
           </li>';
-
     }
 
     public function facet_range($field, $size, $field_name, $type_of_number = "")
@@ -619,19 +638,28 @@ class Facets
         $result_count = count($response["aggregations"]["ranges"]["buckets"]);
 
         if ($result_count > 0) {
-            echo '<a href="#" class="list-group-item list-group-item-action active">'.$field_name.'</a>';
+            echo '<div class="accordion-item">';
+            echo '<h2 class="accordion-header" id="' . hash('crc32', $field_name) . '"></h2>';
+            echo '
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse' . hash('crc32', $field_name) . '" aria-expanded="true" aria-controls="collapse' . hash('crc32', $field_name) . '">
+            ' . $field_name . '
+            </button>
+            ';
+            echo '<div id="collapse' . hash('crc32', $field_name) . '" class="accordion-collapse collapse show" aria-labelledby="' . hash('crc32', $field_name) . '" data-bs-parent="#facets">';
+            echo '<div class="accordion-body">';
             echo '<ul class="list-group list-group-flush">';
             foreach ($response["aggregations"]["ranges"]["buckets"] as $facets) {
                 $facets_array = explode("-", $facets['key']);
                 echo '<li class="list-group-item d-flex justify-content-between align-items-center">';
-                echo '<a href="result.php?&search='.$field.':['.$facets_array[0].' TO '.$facets_array[1].']" style="color:#0040ff;font-size: 90%">Intervalo '.$facets['key'].'</a>
-                <span class="badge badge-primary badge-pill">'.number_format($facets['doc_count'],0,',','.').'</span>';
+                echo '<a href="result.php?&search=' . $field . ':[' . $facets_array[0] . ' TO ' . $facets_array[1] . ']" style="color:#0040ff;font-size: 90%">Intervalo ' . $facets['key'] . '</a>
+                <span class="badge bg-primary">' . number_format($facets['doc_count'], 0, ',', '.') . '</span>';
                 echo '</li>';
             };
             echo '</ul>';
+            echo '</div>';
+            echo '</div>';
+            echo '</div>';
         }
-
-
     }
 }
 
@@ -641,36 +669,36 @@ class Citation
     static function getType($material_type)
     {
         switch ($material_type) {
-        case "ARTIGO DE JORNAL":
-            return "article-newspaper";
-        break;
-        case "ARTIGO DE PERIODICO":
-            return "article-journal";
-        break;
-        case "PARTE DE MONOGRAFIA/LIVRO":
-            return "chapter";
-        break;
-        case "MONOGRAFIA/LIVRO-ED/ORG":
-            return "book";
-        break;
-        case "LIVRO":
-            return "book";
-        break;                  
-        case "APRESENTACAO SONORA/CENICA/ENTREVISTA":
-            return "interview";
-        break;
-        case "TRABALHO DE EVENTO-RESUMO":
-            return "paper-conference";
-        break;
-        case "TRABALHO DE EVENTO":
-            return "paper-conference";
-        break;
-        case "TESE":
-            return "thesis";
-        break;
-        case "TEXTO NA WEB":
-            return "post-weblog";
-        break;
+            case "ARTIGO DE JORNAL":
+                return "article-newspaper";
+                break;
+            case "ARTIGO DE PERIODICO":
+                return "article-journal";
+                break;
+            case "PARTE DE MONOGRAFIA/LIVRO":
+                return "chapter";
+                break;
+            case "MONOGRAFIA/LIVRO-ED/ORG":
+                return "book";
+                break;
+            case "LIVRO":
+                return "book";
+                break;
+            case "APRESENTACAO SONORA/CENICA/ENTREVISTA":
+                return "interview";
+                break;
+            case "TRABALHO DE EVENTO-RESUMO":
+                return "paper-conference";
+                break;
+            case "TRABALHO DE EVENTO":
+                return "paper-conference";
+                break;
+            case "TESE":
+                return "thesis";
+                break;
+            case "TEXTO NA WEB":
+                return "post-weblog";
+                break;
         }
     }
 
@@ -726,7 +754,6 @@ class Citation
                 } elseif (strpos($periodicos_array_new, 'p.') !== false) {
                     $array_citation["page"] = str_replace("p.", "", $periodicos_array_new);
                 }
-
             }
         }
 
@@ -740,12 +767,12 @@ class Citation
         $data = json_decode($json);
         return array($data);
     }
-
 }
 
 
-class UI {
-   
+class UI
+{
+
     static function pagination($page, $total, $limit, $url = null)
     {
 
@@ -754,14 +781,14 @@ class UI {
         if ($page == 1) {
             echo '<li class="list-group-item w-25 disabled">Anterior</li>';
         } else {
-            $_GET["page"] = $page-1 ;
-            echo '<li class="list-group-item w-25"><a href="'.(!empty($url) ? $url : "result.php").'?'.http_build_query($_GET).'"> Anterior</a></li>';
+            $_GET["page"] = $page - 1;
+            echo '<li class="list-group-item w-25"><a href="' . (!empty($url) ? $url : "result.php") . '?' . http_build_query($_GET) . '"> Anterior</a></li>';
         }
-        echo '<li class="list-group-item w-25 disabled">Página '.number_format($page, 0, ',', '.') .'</li>';
-        echo '<li class="list-group-item w-25 disabled">'.number_format($total, 0, ',', '.') .'&nbsp;registros</li>';
-        if ($total/$limit > $page) {
-            $_GET["page"] = $page+1;
-            echo '<li class="list-group-item w-25"><a href="'.(!empty($url) ? $url : "result.php").'?'.http_build_query($_GET).'"> Próxima</a></li>';
+        echo '<li class="list-group-item w-25 disabled">Página ' . number_format($page, 0, ',', '.') . '</li>';
+        echo '<li class="list-group-item w-25 disabled">' . number_format($total, 0, ',', '.') . '&nbsp;registros</li>';
+        if ($total / $limit > $page) {
+            $_GET["page"] = $page + 1;
+            echo '<li class="list-group-item w-25"><a href="' . (!empty($url) ? $url : "result.php") . '?' . http_build_query($_GET) . '"> Próxima</a></li>';
         } else {
             echo '<li class="list-group-item w-25 disabled">Próxima</li>';
         }
@@ -772,7 +799,8 @@ class UI {
 
 
 
-class Authorities {
+class Authorities
+{
 
     public static function tematresQuery($term, $tematresWebServicesUrl)
     {
@@ -789,7 +817,7 @@ class Authorities {
         // Query tematres
         $ch = curl_init();
         $method = "GET";
-        $url = ''.$tematresWebServicesUrl.'?task=fetch&arg='.$clean_term.'&output=json';
+        $url = '' . $tematresWebServicesUrl . '?task=fetch&arg=' . $clean_term . '&output=json';
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
@@ -803,7 +831,7 @@ class Authorities {
             }
             $ch = curl_init();
             $method = "GET";
-            $url = ''.$tematresWebServicesUrl.'?task=fetchTerm&arg='.$term_key.'&output=json';
+            $url = '' . $tematresWebServicesUrl . '?task=fetchTerm&arg=' . $term_key . '&output=json';
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
@@ -814,7 +842,7 @@ class Authorities {
             curl_close($ch);
             $ch_country = curl_init();
             $method = "GET";
-            $url_country = ''.$tematresWebServicesUrl.'?task=fetchUp&arg='.$term_key.'&output=json';
+            $url_country = '' . $tematresWebServicesUrl . '?task=fetchUp&arg=' . $term_key . '&output=json';
             curl_setopt($ch_country, CURLOPT_URL, $url_country);
             curl_setopt($ch_country, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch_country, CURLOPT_CUSTOMREQUEST, strtoupper($method));
@@ -832,7 +860,7 @@ class Authorities {
             $topTerm = "ND";
         }
         return compact('foundTerm', 'termNotFound', 'topTerm');
-    } 
+    }
 }
 
 /**
@@ -857,8 +885,10 @@ class DSpaceREST
         curl_setopt($ch, CURLOPT_URL, "$dspaceRest/rest/login");
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_HEADER, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS,
-            http_build_query(array('email' => $dspaceEmail,'password' => $dspacePassword))
+        curl_setopt(
+            $ch,
+            CURLOPT_POSTFIELDS,
+            http_build_query(array('email' => $dspaceEmail, 'password' => $dspacePassword))
         );
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
@@ -868,7 +898,6 @@ class DSpaceREST
         return $output_parsed[3];
 
         curl_close($ch);
-
     }
 
     static function logoutREST($DSpaceCookies)
@@ -894,9 +923,12 @@ class DSpaceREST
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
         if (!empty($DSpaceCookies)) {
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                "Cookie: $DSpaceCookies",
-                'Content-Type: application/json'
+            curl_setopt(
+                $ch,
+                CURLOPT_HTTPHEADER,
+                array(
+                    "Cookie: $DSpaceCookies",
+                    'Content-Type: application/json'
                 )
             );
         }
@@ -918,9 +950,12 @@ class DSpaceREST
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
         if (!empty($DSpaceCookies)) {
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                "Cookie: $DSpaceCookies",
-                'Content-Type: application/json'
+            curl_setopt(
+                $ch,
+                CURLOPT_HTTPHEADER,
+                array(
+                    "Cookie: $DSpaceCookies",
+                    'Content-Type: application/json'
                 )
             );
         }
@@ -938,9 +973,12 @@ class DSpaceREST
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
         if (!empty($DSpaceCookies)) {
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                "Cookie: $DSpaceCookies",
-                'Content-Type: application/json'
+            curl_setopt(
+                $ch,
+                CURLOPT_HTTPHEADER,
+                array(
+                    "Cookie: $DSpaceCookies",
+                    'Content-Type: application/json'
                 )
             );
         }
@@ -957,9 +995,12 @@ class DSpaceREST
         curl_setopt($ch, CURLOPT_URL, "$dspaceRest/rest/bitstreams/$bitstreamID/policy/$policyID");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            "Cookie: $DSpaceCookies",
-            'Content-Type: application/json'
+        curl_setopt(
+            $ch,
+            CURLOPT_HTTPHEADER,
+            array(
+                "Cookie: $DSpaceCookies",
+                'Content-Type: application/json'
             )
         );
         $output = curl_exec($ch);
@@ -989,9 +1030,12 @@ class DSpaceREST
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
         if (!empty($DSpaceCookies)) {
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                "Cookie: $DSpaceCookies",
-                'Content-Type: application/json'
+            curl_setopt(
+                $ch,
+                CURLOPT_HTTPHEADER,
+                array(
+                    "Cookie: $DSpaceCookies",
+                    'Content-Type: application/json'
                 )
             );
         }
@@ -1022,7 +1066,7 @@ class DSpaceREST
     //     curl_close($ch);
     // }
 
-    static function createItemDSpace($dataString,$collection,$DSpaceCookies)
+    static function createItemDSpace($dataString, $collection, $DSpaceCookies)
     {
         global $dspaceRest;
         $ch = curl_init();
@@ -1030,14 +1074,16 @@ class DSpaceREST
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch, CURLOPT_POSTFIELDS, $dataString);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            "Cookie: $DSpaceCookies",
-            'Content-Type: application/json'
+        curl_setopt(
+            $ch,
+            CURLOPT_HTTPHEADER,
+            array(
+                "Cookie: $DSpaceCookies",
+                'Content-Type: application/json'
             )
         );
         $output = curl_exec($ch);
         curl_close($ch);
-
     }
 
     static function deleteItemDSpace($uuid, $DSpaceCookies)
@@ -1048,9 +1094,12 @@ class DSpaceREST
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
         if (!empty($DSpaceCookies)) {
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                "Cookie: $DSpaceCookies",
-                'Content-Type: application/json'
+            curl_setopt(
+                $ch,
+                CURLOPT_HTTPHEADER,
+                array(
+                    "Cookie: $DSpaceCookies",
+                    'Content-Type: application/json'
                 )
             );
         }
@@ -1069,10 +1118,13 @@ class DSpaceREST
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, file_get_contents($file["file"]["tmp_name"]));
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            "Cookie: $DSpaceCookies",
-            'Content-Type: text/plain',
-            'Accept: application/json'
+        curl_setopt(
+            $ch,
+            CURLOPT_HTTPHEADER,
+            array(
+                "Cookie: $DSpaceCookies",
+                'Content-Type: text/plain',
+                'Accept: application/json'
             )
         );
         $output = curl_exec($ch);
@@ -1089,9 +1141,12 @@ class DSpaceREST
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
         if (!empty($DSpaceCookies)) {
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                "Cookie: $DSpaceCookies",
-                'Content-Type: application/json'
+            curl_setopt(
+                $ch,
+                CURLOPT_HTTPHEADER,
+                array(
+                    "Cookie: $DSpaceCookies",
+                    'Content-Type: application/json'
                 )
             );
         }
@@ -1101,7 +1156,7 @@ class DSpaceREST
         curl_close($ch);
     }
 
-    static function buildDC($cursor,$sysno)
+    static function buildDC($cursor, $sysno)
     {
         $arrayDC["type"] = "item";
 
@@ -1205,7 +1260,6 @@ class DSpaceREST
 
         $jsonDC = json_encode($arrayDC);
         return $jsonDC;
-
     }
 
     static function testREST($DSpaceCookies)
@@ -1219,8 +1273,5 @@ class DSpaceREST
         $server_output = curl_exec($ch);
         print_r($server_output);
         curl_close($ch);
-
     }
 }
-
-?>

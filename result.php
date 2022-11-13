@@ -4,9 +4,9 @@ session_start();
 
 $errorMsg = "";
 $validUser = $_SESSION["login"] === true;
-if(isset($_POST["username"])) {
-  $validUser = $_POST["username"] == "rppbci_admin" && $_POST["password"] == "rppbci_admin";
-  if(!$validUser) $errorMsg = "Usuário ou senha inválidos.";
+if (isset($_POST["username"])) {
+    $validUser = $_POST["username"] == "rppbci_admin" && $_POST["password"] == "rppbci_admin";
+    if (!$validUser) $errorMsg = "Usuário ou senha inválidos.";
     else $_SESSION["login"] = true;
 }
 
@@ -59,12 +59,6 @@ $mode = "reference";
     <?php require 'inc/meta-header.php' ?>
     <title>Resultado da busca</title>
 
-    <!-- D3.js Libraries and CSS -->
-    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.2.2/d3.v3.min.js"></script>
-
-    <!-- UV Charts -->
-    <script type="text/javascript" src=inc/uvcharts/uvcharts.full.min.js></script>
-
     <!-- Altmetric Script -->
     <script type='text/javascript' src='https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js'></script>
 
@@ -77,31 +71,26 @@ $mode = "reference";
 <body>
 
     <?php
-        if (file_exists("inc/analyticstracking.php")) {
-            include_once "inc/analyticstracking.php";
-        }
-        ?>
+    if (file_exists("inc/analyticstracking.php")) {
+        include_once "inc/analyticstracking.php";
+    }
+    ?>
 
 
     <!-- NAV -->
     <?php require 'inc/navbar.php'; ?>
     <!-- /NAV -->
-
-    <br /><br /><br /><br />
-
     <main role="main">
-        <div class="container">
-
+        <div class="container mt-3">
             <div class="row">
+
                 <div class="col-8">
-
-
                     <!-- PAGINATION -->
                     <?php UI::pagination($page, $total, $limit); ?>
                     <!-- /PAGINATION -->
                     <br />
 
-                    <?php if($total == 0) : ?>
+                    <?php if ($total == 0) : ?>
 
                     <div class="alert alert-info" role="alert">
                         Sua busca não obteve resultado. Você pode refazer sua busca abaixo:<br /><br />
@@ -127,20 +116,20 @@ $mode = "reference";
                     <!-- Resultados -->
                     <?php foreach ($cursor["hits"]["hits"] as $r) : ?>
 
-                    <div class="card">
+                    <div class="card mt-1">
                         <div class="card-body">
-                            <h6 class="card-subtitle mb-2 text-muted"><?php echo $r["_source"]['type'];?>
+                            <h6 class="card-subtitle mb-2 text-muted"><?php echo $r["_source"]['type']; ?>
                                 <?php if (!empty($r["_source"]['source'])) : ?>
-                                <h6 class="card-subtitle mb-2 text-muted"><?php echo $r["_source"]['source'];?>
-                                    <?php (isset($r["_source"]["isPartOf"]["volume"]) ?  print_r(" - v.".$r["_source"]["isPartOf"]["volume"]) : "") ?>
-                                    <?php (isset($r["_source"]["isPartOf"]["issue"]) ? print_r(" - n.".$r["_source"]["isPartOf"]["issue"]) : "") ?>
-                                    <?php (isset($r["_source"]["isPartOf"]["initialPage"]) ? print_r(" - p.".$r["_source"]["isPartOf"]["initialPage"]) : "") ?>
+                                <h6 class="card-subtitle mb-2 text-muted"><?php echo $r["_source"]['source']; ?>
+                                    <?php (isset($r["_source"]["isPartOf"]["volume"]) ?  print_r(" - v." . $r["_source"]["isPartOf"]["volume"]) : "") ?>
+                                    <?php (isset($r["_source"]["isPartOf"]["issue"]) ? print_r(" - n." . $r["_source"]["isPartOf"]["issue"]) : "") ?>
+                                    <?php (isset($r["_source"]["isPartOf"]["initialPage"]) ? print_r(" - p." . $r["_source"]["isPartOf"]["initialPage"]) : "") ?>
                                 </h6>
                                 <?php endif; ?>
                                 <h5 class="card-title">
                                     <a class="text-dark"
                                         href="<?php echo $r['_source']['url']; ?>"><?php echo $r["_source"]['name']; ?>
-                                        (<?php echo $r["_source"]['datePublished'];?>)
+                                        (<?php echo $r["_source"]['datePublished']; ?>)
                                     </a>
                                     <?php if (!empty($r["_source"]['openalex']['id'])) : ?>
                                     <a href="<?php echo $r["_source"]['openalex']['id'] ?>" target="_blank"><img
@@ -153,60 +142,59 @@ $mode = "reference";
                                 <?php endif; ?>
 
                                 <?php if (!empty($r["_source"]["author"])) : ?>
-                                <?php 
+                                <?php
                                         foreach ($r["_source"]["author"] as $autores) {
-                                            if (!empty($autores["organization"]["name"])){
-                                                $authors_array[]=''.$autores["person"]["name"].' ('.$autores["organization"]["name"].')';
+                                            if (!empty($autores["organization"]["name"])) {
+                                                $authors_array[] = '' . $autores["person"]["name"] . ' (' . $autores["organization"]["name"] . ')';
                                             } else {
-                                                $authors_array[]=''.$autores["person"]["name"].'';
+                                                $authors_array[] = '' . $autores["person"]["name"] . '';
                                             }
-                                            
                                         }
-                                        $array_aut = implode("; ",$authors_array);
+                                        $array_aut = implode("; ", $authors_array);
                                         unset($authors_array);
-                                        echo '<p class="text-muted"><b>Autores:</b> '.''. $array_aut.'</p>';
-                                    ?>
+                                        echo '<p class="text-muted"><b>Autores:</b> ' . '' . $array_aut . '</p>';
+                                        ?>
                                 <?php endif; ?>
 
                                 <?php if (!empty($r['_source']['openalex']['authorships'])) : ?>
-                                <?php 
+                                <?php
                                         echo '<p class="text-muted"><b>Autores no Openalex:</b>';
                                         echo '<ul>';
                                         foreach ($r['_source']['openalex']['authorships'] as $author) {
                                             //echo "<pre>".print_r($author, true)."</pre>";
-                                            
-                                             echo '<li>'.$author['author']['display_name'].'
-                                            '.(($author['raw_affiliation_string']) ? '('.$author['raw_affiliation_string'].')' : '').'
-                                            '.(($author['author']['orcid']) ? '<a href="'.$author['author']['orcid'].'" target="_blank"><img src="inc/images/240px-ORCID_iD.svg.png" width="20" height="20"></a>' : '').'
-                                            <a href="'.$author['author']['id'].'" target="_blank">
+
+                                            echo '<li>' . $author['author']['display_name'] . '
+                                            ' . (($author['raw_affiliation_string']) ? '(' . $author['raw_affiliation_string'] . ')' : '') . '
+                                            ' . (($author['author']['orcid']) ? '<a href="' . $author['author']['orcid'] . '" target="_blank"><img src="inc/images/240px-ORCID_iD.svg.png" width="20" height="20"></a>' : '') . '
+                                            <a href="' . $author['author']['id'] . '" target="_blank">
                                                 <img src="inc/images/openalex400x400.jpg" width="20" height="20">
-                                            </a></li>';                                           
+                                            </a></li>';
                                         }
                                         echo '</ul>';
-                                        
-                                    ?>
+
+                                        ?>
                                 <?php endif; ?>
 
                                 <?php if (!empty($r["_source"]['about'])) : ?>
-                                <?php 
+                                <?php
                                         foreach ($r["_source"]['about'] as $assunto) {
-                                            $assunto_array[]=''.$assunto.'';
+                                            $assunto_array[] = '' . $assunto . '';
                                         }
-                                        $array_assunto = implode("; ",$assunto_array);
+                                        $array_assunto = implode("; ", $assunto_array);
                                         unset($assunto_array);
-                                        echo '<p class="text-muted"><b>Assuntos:</b> '.''. $array_assunto.'</p>';
-                                    ?>
+                                        echo '<p class="text-muted"><b>Assuntos:</b> ' . '' . $array_assunto . '</p>';
+                                        ?>
                                 <?php endif; ?>
 
                                 <?php if (!empty($r["_source"]['openalex']['concepts'])) : ?>
-                                <?php 
+                                <?php
                                         foreach ($r["_source"]['openalex']['concepts'] as $concept) {
-                                            $concept_array[]=''.$concept['display_name'].'';
+                                            $concept_array[] = '' . $concept['display_name'] . '';
                                         }
                                         $array_concept = implode("; ", $concept_array);
                                         unset($concept_array);
-                                        echo '<p class="text-muted"><b>Conceitos definidos pelo Openalex:</b> '.''. $array_concept.'</p>';
-                                    ?>
+                                        echo '<p class="text-muted"><b>Conceitos definidos pelo Openalex:</b> ' . '' . $array_concept . '</p>';
+                                        ?>
                                 <?php endif; ?>
 
                                 <?php if (!empty($r["_source"]['description'])) : ?>
@@ -215,21 +203,21 @@ $mode = "reference";
 
                                 <?php if (!empty($r["_source"]['publisher']['organization']['name'])) : ?>
                                 <p class="text-muted"><b>Editora:</b>
-                                    <?php echo $r["_source"]['publisher']['organization']['name'];?></p>
+                                    <?php echo $r["_source"]['publisher']['organization']['name']; ?></p>
                                 <?php endif; ?>
 
                                 <?php if (!empty($r["_source"]['ISBN'])) : ?>
-                                <p class="text-muted"><b>ISBN:</b> <?php echo $r["_source"]['ISBN'][0];?></p>
+                                <p class="text-muted"><b>ISBN:</b> <?php echo $r["_source"]['ISBN'][0]; ?></p>
                                 <?php endif; ?>
 
                                 <?php if (!empty($r["_source"]['doi'])) : ?>
                                 <p class="text-muted"><b>DOI:</b> <a
-                                        href="http://dx.doi.org/<?php echo $r["_source"]['doi'];?>"
-                                        target="_blank"><?php echo $r["_source"]['doi'];?></a></p>
+                                        href="http://dx.doi.org/<?php echo $r["_source"]['doi']; ?>"
+                                        target="_blank"><?php echo $r["_source"]['doi']; ?></a></p>
                                 <?php endif; ?>
 
                                 <p class="text-muted"><a class="btn btn-info"
-                                        href="node.php?_id=<?php echo $r["_id"];?>" target="_blank"><b>Ver registro
+                                        href="node.php?_id=<?php echo $r["_id"]; ?>" target="_blank"><b>Ver registro
                                             completo</b></a></p>
 
                                 <?php if (!empty($r["_source"]['facebook']['facebook_total'])) : ?>
@@ -246,10 +234,10 @@ $mode = "reference";
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td><?php echo $r["_source"]['facebook']['reaction_count'];?></td>
-                                            <td><?php echo $r["_source"]['facebook']['comment_count'];?></td>
-                                            <td><?php echo $r["_source"]['facebook']['share_count'];?></td>
-                                            <td><?php echo $r["_source"]['facebook']['facebook_total'];?></td>
+                                            <td><?php echo $r["_source"]['facebook']['reaction_count']; ?></td>
+                                            <td><?php echo $r["_source"]['facebook']['comment_count']; ?></td>
+                                            <td><?php echo $r["_source"]['facebook']['share_count']; ?></td>
+                                            <td><?php echo $r["_source"]['facebook']['facebook_total']; ?></td>
                                         </tr>
                                     </tbody>
                                 </table><br />
@@ -277,12 +265,12 @@ $mode = "reference";
                                             </div>
                                             <div class="modal-body">
                                                 <?php
-                                                    foreach ($r["_source"]['references'] as $ref) {
-                                                        echo ''.$ref["type"].': '.implode("; ", $ref["authors"]).'. '.$ref["name"].'. '.$ref["publisher"].', '.$ref["datePublished"].'.<br/>';
-                                                        //print_r($ref);
-                                                        //echo "<br/><br/>";
-                                                    }
-                                                ?>
+                                                        foreach ($r["_source"]['references'] as $ref) {
+                                                            echo '' . $ref["type"] . ': ' . implode("; ", $ref["authors"]) . '. ' . $ref["name"] . '. ' . $ref["publisher"] . ', ' . $ref["datePublished"] . '.<br/>';
+                                                            //print_r($ref);
+                                                            //echo "<br/><br/>";
+                                                        }
+                                                        ?>
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary"
@@ -317,15 +305,15 @@ $mode = "reference";
 
                                 <?php if (!empty($r["_source"]['doi'])) : ?>
                                 <div data-badge-popover="right" data-badge-type="1"
-                                    data-doi="<?php echo $r["_source"]['doi'];?>" data-hide-no-mentions="true"
+                                    data-doi="<?php echo $r["_source"]['doi']; ?>" data-hide-no-mentions="true"
                                     class="altmetric-embed"></div>
-                                <a href="https://plu.mx/plum/a/?doi=<?php echo $r["_source"]['doi'];?>"
+                                <a href="https://plu.mx/plum/a/?doi=<?php echo $r["_source"]['doi']; ?>"
                                     class="plumx-details" data-hide-when-empty="true" data-badge="true"></a>
                                 <div data-badge-details="right" data-badge-type="2"
-                                    data-doi="<?php echo $r["_source"]['doi'];?>" data-condensed="true"
+                                    data-doi="<?php echo $r["_source"]['doi']; ?>" data-condensed="true"
                                     data-hide-no-mentions="true" class="altmetric-embed"></div>
                                 <div><span class="__dimensions_badge_embed__"
-                                        data-doi="<?php echo $r["_source"]['doi'];?>" data-hide-zero-citations="true"
+                                        data-doi="<?php echo $r["_source"]['doi']; ?>" data-hide-zero-citations="true"
                                         data-style="small_rectangle"></span></div>
                                 </li>
                                 <?php endif; ?>
@@ -334,8 +322,8 @@ $mode = "reference";
                                 <br /><br />
                                 <form class="form-signin" method="post" action="editor/index.php">
                                     <?php
-                                            $jsonRecord = json_encode($r["_source"]);                                        
-                                        ?>
+                                            $jsonRecord = json_encode($r["_source"]);
+                                            ?>
                                     <input type="hidden" id="rppbci_id" name="rppbci_id"
                                         value="<?php echo $r["_id"] ?>">
                                     <input type="hidden" id="record" name="record"
@@ -347,7 +335,8 @@ $mode = "reference";
 
                                 <?php endif; ?>
 
-                                <?php //print("<pre>".print_r($r['_source'], true)."</pre>"); ?>
+                                <?php //print("<pre>".print_r($r['_source'], true)."</pre>"); 
+                                    ?>
 
 
 
@@ -424,7 +413,7 @@ $mode = "reference";
                                 </div>
                             </div>
                         </li>
--->
+                        -->
                     <?php endforeach; ?>
 
                     <!-- /RECORDS -->
@@ -438,59 +427,46 @@ $mode = "reference";
                     <!-- Facetas - Início -->
                     <h3 class="uk-panel-title">Refinar busca</h3>
                     <hr>
-                    <ul class="uk-nav-default uk-nav-parent-icon" uk-nav="multiple: true">
+                    <div class="accordion" id="facets">
+
                         <?php
-                                $facets = new facets();
-                                $facets->query = $result_get['query'];
+                        $facets = new facets();
+                        $facets->query = $result_get['query'];
 
-                                if (!isset($_GET)) {
-                                    $_GET = null;
-                                }
+                        if (!isset($_GET)) {
+                            $_GET = null;
+                        }
 
-                                $facets->facet("type", 100, "Tipo", null, "_term", $_GET);
-                                $facets->facet("source", 100, "Título do periódico", null, "_term", $_GET);
-                                $facets->facet("datePublished", 120, "Ano de publicação", "desc", "_term", $_GET);
-                                $facets->facet("author.person.name", 120, "Autores", null, "_term", $_GET);
-                                $facets->facet("author.organization.name", 120, "Afiliação", null, "_term", $_GET);
-                                $facets->facet("openalex.authorships.raw_affiliation_string", 120, "Afiliação obtida pelo Openalex", null, "_term", $_GET);
-                                $facets->facet("openalex.authorships.institutions.display_name", 120, "Afiliação normalizada obtida pelo Openalex", null, "_term", $_GET);                       
-                                $facets->facet("originalType", 10, "Seções", null, "_term", $_GET);                
-                                $facets->facet("about", 100, "Assuntos", null, "_term", $_GET);
-                                $facets->facet("publisher.organization.name", 100, "Editora", null, "_term", $_GET);
-                                $facets->facet("isPartOf.name", 100, "Nome do periódico", null, "_term", $_GET);
-                                $facets->facet("isPartOf.volume", 100, "Volume", null, "_term", $_GET);
-                                $facets->facet("isPartOf.issue", 100, "Fascículo", null, "_term", $_GET);
-                                $facets->facet("isPartOf.ISSN", 100, "ISSN", null, "_term", $_GET);
-                                $facets->facet("references.authors", 100, "Autores mais citados nas referências", null, "_term", $_GET);
-                                $facets->facet("references.datePublished", 100, "Ano de publicação das obras citadas nas referências", null, "_term", $_GET);
-                                $facets->facet("openalex.concepts.display_name", 100, "Openalex Concepts", null, "_term", $_GET);
-                                $facets->facet_range("openalex.cited_by_count", 100, "Citações no Openalex", 'INT');
-                                $facets->facetExistsField("doi", 2, "Possui DOI preenchido?", null, "_term", $_GET);
-                                $facets->facetExistsField("openalex.id", 2, "Openalex?", null, "_term", $_GET);
-                            ?>
-                    </ul>
-                    <hr>
+                        $facets->facet("type", 100, "Tipo", null, "_term", $_GET);
+                        $facets->facet("source", 100, "Título do periódico", null, "_term", $_GET);
+                        $facets->facet("datePublished", 120, "Ano de publicação", "desc", "_term", $_GET);
+                        $facets->facet("author.person.name", 120, "Autores", null, "_term", $_GET);
+                        $facets->facet("author.organization.name", 120, "Afiliação", null, "_term", $_GET);
+                        $facets->facet("openalex.authorships.raw_affiliation_string", 120, "Afiliação obtida pelo Openalex", null, "_term", $_GET);
+                        $facets->facet("openalex.authorships.institutions.display_name", 120, "Afiliação normalizada obtida pelo Openalex", null, "_term", $_GET);
+                        $facets->facet("originalType", 10, "Seções", null, "_term", $_GET);
+                        $facets->facet("about", 100, "Assuntos", null, "_term", $_GET);
+                        $facets->facet("publisher.organization.name", 100, "Editora", null, "_term", $_GET);
+                        $facets->facet("isPartOf.name", 100, "Nome do periódico", null, "_term", $_GET);
+                        $facets->facet("isPartOf.volume", 100, "Volume", null, "_term", $_GET);
+                        $facets->facet("isPartOf.issue", 100, "Fascículo", null, "_term", $_GET);
+                        $facets->facet("isPartOf.ISSN", 100, "ISSN", null, "_term", $_GET);
+                        $facets->facet("references.authors", 100, "Autores mais citados nas referências", null, "_term", $_GET);
+                        $facets->facet("references.datePublished", 100, "Ano de publicação das obras citadas nas referências", null, "_term", $_GET);
+                        $facets->facet("openalex.concepts.display_name", 100, "Openalex Concepts", null, "_term", $_GET);
+                        $facets->facet_range("openalex.cited_by_count", 100, "Citações no Openalex", 'INT');
+                        $facets->facetExistsField("doi", 2, "Possui DOI preenchido?", null, "_term", $_GET);
+                        $facets->facetExistsField("openalex.id", 2, "Openalex?", null, "_term", $_GET);
+                        ?>
 
+                    </div>
                 </div>
             </div>
-
-            <div class="uk-width-3-4@s uk-width-4-6@m">
-
-
-
-
-
-
-
-
-            </div>
         </div>
-        <hr class="uk-grid-divider">
+        <hr />
 
 
-        <!-- FOOTER -->
-        <?php require 'inc/footer.php'; ?>
-        <!-- /FOOTER -->
+
         </div>
 
 
@@ -502,7 +478,10 @@ $mode = "reference";
         });
         </script>
         <script async src="https://badge.dimensions.ai/badge.js" charset="utf-8"></script>
-
+    </main>
+    <!-- FOOTER -->
+    <?php require 'inc/footer.php'; ?>
+    <!-- /FOOTER -->
 
 </body>
 
