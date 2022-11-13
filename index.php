@@ -44,7 +44,7 @@
     <!-- /NAV -->
 
     <main role="main">
-        <div class="px-4 py-5 my-5 text-center background">
+        <div class="px-5 py-5 text-center background">
             <h1 class="display-5 fw-bold"><?php echo $branch; ?></h1>
             <div class="col-lg-6 mx-auto">
                 <p class="lead mb-4"><?php echo $branch_description; ?></p>
