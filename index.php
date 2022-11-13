@@ -51,7 +51,6 @@
                 <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
                     <form action="result.php">
                         <div class="form-group">
-                            <label for="searchQuery">Termos de busca</label>
                             <input type="text" name="search" class="form-control" id="searchQuery"
                                 aria-describedby="searchHelp" placeholder="Pesquise por termo ou autor">
                             <ul>
@@ -69,7 +68,7 @@
             </div>
         </div>
 
-        <div class="container">
+        <div class="container mt-5">
 
             <div class="row">
                 <div class="col">
@@ -102,7 +101,7 @@
                 </div>
             </div>
 
-            <hr>
+            <hr class="mt-5">
             <h3 class="fs-2">
                 Registros com mais citações no <a href="https://openalex.org" target="_blank">Openalex</a>
             </h3>
