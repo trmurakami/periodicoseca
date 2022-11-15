@@ -57,8 +57,8 @@ if (!$_SESSION["login"]) {
                 <div class="form-group">
                     <label for="area">Grande área</label>
                     <input type="text" class="form-control" id="area" aria-describedby="areaHelp" name="area"
-                        placeholder="Grande área do periódico">
-                    <small id="areaHelp" class="form-text text-muted">Informe a grande área do periódico.
+                        placeholder="Grande área">
+                    <small id="areaHelp" class="form-text text-muted">Informe a grande área.
                         Opcional</small>
                 </div>
 
