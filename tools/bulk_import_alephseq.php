@@ -2,6 +2,7 @@
 <?php
 
 require '../inc/config.php';
+require '../inc/functions.php';
 require 'functions_import.php';
 
 $record = array();
@@ -44,6 +45,7 @@ while ($line = fgets(STDIN)) {
                             $body["doc"]["datePublished"] = "N/D";
                         }
                     }
+                    $body["doc"]["origin"] = "DEDALUS";
                     $body["doc"]["base"][] = "Partituras";
                     $response = Elasticsearch::update($id, $body);
                     //print_r($id);				
@@ -51,6 +53,7 @@ while ($line = fgets(STDIN)) {
                 } elseif ($marc["record"]["945"]["b"][0] == "TRABALHO DE CONCLUSAO DE CURSO - TCC") {
 
                     $body = fixes($marc);
+                    $body["doc"]["origin"] = "DEDALUS";
                     $body["doc"]["base"][] = "Trabalhos acadêmicos";
                     $body["doc"]["sysno"] = $id;
                     if (isset($marc["record"]["260"])) {
@@ -68,6 +71,7 @@ while ($line = fgets(STDIN)) {
                 } elseif ($marc["record"]["945"]["b"][0] == "TRABALHO DE ESPECIALIZACAO - TCE") {
 
                     $body = fixes($marc);
+                    $body["doc"]["origin"] = "DEDALUS";
                     $body["doc"]["base"][] = "Trabalhos acadêmicos";
                     $body["doc"]["sysno"] = $id;
                     if (isset($marc["record"]["260"])) {
@@ -95,6 +99,7 @@ while ($line = fgets(STDIN)) {
                             $body["doc"]["datePublished"] = "N/D";
                         }
                     }
+                    $body["doc"]["origin"] = "DEDALUS";
                     $body["doc"]["base"][] = "E-Books";
                     $response = Elasticsearch::update($id, $body);
                 } else {
@@ -110,6 +115,7 @@ while ($line = fgets(STDIN)) {
                         }
                     }
                     $body["doc"]["base"][] = "Livros";
+                    $body["doc"]["origin"] = "DEDALUS";
                     //print_r($body);
                     $response = Elasticsearch::update($id, $body);
                     //print_r($id);
@@ -168,9 +174,10 @@ while ($line = fgets(STDIN)) {
                 break;
             case 06:
                 $body = fixes($marc);
+                $body["doc"]["origin"] = "DEDALUS";
                 $body["doc"]["base"][] = "Trabalhos acadêmicos";
                 $body["doc"]["sysno"] = $id;
-                $response = Elasticsearch::update($id, $type, $body, "bdta");
+                $response = Elasticsearch::update($id, $body);
                 break;
             default:
                 break;
