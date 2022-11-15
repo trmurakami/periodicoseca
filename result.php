@@ -440,6 +440,7 @@ $mode = "reference";
 
                         $facets->facet("type", 100, "Tipo", null, "_term", $_GET);
                         $facets->facet("source", 100, "Título do periódico", null, "_term", $_GET);
+                        $facets->facet("area", 100, "Grande área", null, "_term", $_GET);
                         $facets->facet("datePublished", 120, "Ano de publicação", "desc", "_term", $_GET);
                         $facets->facet("author.person.name", 120, "Autores", null, "_term", $_GET);
                         $facets->facet("author.organization.name", 120, "Afiliação", null, "_term", $_GET);

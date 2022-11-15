@@ -222,6 +222,7 @@ class Admin
         echo '<th>Nome alternativo</th>';
         echo '<th>Data da coleta</th>';
         echo '<th>Núm. de registros</th>';
+        echo '<th>Área</th>';
         echo '<th>Atualizar tudo</th>';
         echo '<th>Excluir</th>';
         echo '</tr>';
@@ -252,7 +253,8 @@ class Admin
 
             echo '<td>' . $repository['_source']['date'] . '</td>';
             echo '<td>' . $totalSum . '</td>';
-            echo '<td><a class="uk-button uk-button-success" href="harvester.php?oai=' . $repository['_source']['url'] . '&metadataFormat=' . $repository['_source']['metadataFormat'] . '' . ((isset($repository['_source']['typeOfContent']) ? '&typeOfContent=' . $repository['_source']['typeOfContent'] . '' : '')) . '' . ((isset($repository['_source']['repositoryName']) ? '&repositoryName=' . $repository['_source']['repositoryName'] . '' : '')) . '">Update</a></td>';
+            echo '<td>' . ((isset($repository['_source']['area']) ? '' . $repository['_source']['area'] . '' : '')) . '</td>';
+            echo '<td><a class="uk-button uk-button-success" href="harvester.php?oai=' . $repository['_source']['url'] . '&metadataFormat=' . $repository['_source']['metadataFormat'] . '' . ((isset($repository['_source']['typeOfContent']) ? '&typeOfContent=' . $repository['_source']['typeOfContent'] . '' : '')) . '' . ((isset($repository['_source']['repositoryName']) ? '&repositoryName=' . $repository['_source']['repositoryName'] . '' : '')) . '' . ((isset($repository['_source']['area']) ? '&area=' . $repository['_source']['area'] . '' : '')) . '">Update</a></td>';
             echo '<td><a class="uk-button uk-button-danger" href="harvester.php?delete=' . $repository['_id'] . '&delete_name=' . htmlentities(urlencode($repository['_source']['name'])) . '">Excluir</a></td></tr>';
         }
         echo '</tbody>';
@@ -861,6 +863,58 @@ class Homepage
             echo '</li>';
             echo '</ul>';
             echo '<div class="modal fade" id="' . str_replace(".", "", $field) . 'Modal" tabindex="-1" role="dialog" aria-labelledby="' . str_replace(".", "", $field) . 'ModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="' . $field . 'ModalLabel">' . $field . '</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <ul class="list-group list-group-flush">';
+            foreach ($response["aggregations"]["group_by_state"]["buckets"] as $facets) {
+                echo '<li class="list-group-item"><a href="result.php?filter[]=' . $field . ':&quot;' . urlencode($facets['key']) . '&quot;">' . $facets['key'] . ' (' . number_format($facets['doc_count'], 0, ',', '.') . ')</a></li>';
+            }
+            echo '</ul>';
+            echo '
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                </div>
+                </div>
+            </div></div></div>
+            ';
+        }
+    }
+
+    static function homeAgg($field)
+    {
+        $query["aggs"]["group_by_state"]["terms"]["field"] = "$field.keyword";
+        $query["aggs"]["group_by_state"]["terms"]["size"] = 50;
+
+        $response = Elasticsearch::search(null, 0, $query);
+        $result_count = count($response["aggregations"]["group_by_state"]["buckets"]);
+
+        if ($result_count == 0) {
+        } elseif (($result_count != 0) && ($result_count < 5)) {
+
+            foreach ($response["aggregations"]["group_by_state"]["buckets"] as $facets) {
+                echo '<li class="list-group-item"><a href="result.php?filter[]=' . $field . ':&quot;' . urlencode($facets['key']) . '&quot;">' . $facets['key'] . ' (' . number_format($facets['doc_count'], 0, ',', '.') . ')</a></li>';
+            }
+        } else {
+
+            $i = 0;
+            while ($i < 5) {
+                echo '<li class="list-group-item"><a href="result.php?filter[]=' . $field . ':&quot;' . urlencode($response["aggregations"]["group_by_state"]["buckets"][$i]['key']) . '&quot;">' . $response["aggregations"]["group_by_state"]["buckets"][$i]['key'] . ' (' . number_format($response["aggregations"]["group_by_state"]["buckets"][$i]['doc_count'], 0, ',', '.') . ')</a></li>';
+                $i++;
+            }
+
+
+            echo '<li class="list-group-item d-flex justify-content-between align-items-center">';
+            echo '<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#' . str_replace(".", "", $field) . 'Modal">ver todos >>></button>  ';
+            echo '</li>';
+            echo '</ul>';
+            echo '<div class="modal fade" id="' . $field . 'Modal" tabindex="-1" role="dialog" aria-labelledby="' . str_replace(".", "", $field) . 'ModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                 <div class="modal-header">

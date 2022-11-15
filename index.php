@@ -80,6 +80,10 @@
                     <ul class="list-group list-group-flush">
                         <?php Homepage::fieldAgg("source", "Trabalho em evento"); ?>
                     </ul>
+                    <h2>E-books</h2>
+                    <ul class="list-group list-group-flush">
+                        <?php Homepage::fieldAgg("source", "E-book"); ?>
+                    </ul>
                 </div>
                 <div class="col">
                     <h3 class="fs-2">Estatísticas</h3>
@@ -91,6 +95,16 @@
                         <li class="list-group-item">Citações via Crossref API: <a
                                 href="result.php?search=crossref.message.is-referenced-by-count:[1 TO *]"><?php echo Homepage::sumFieldAggCrossref(); ?></a>
                         </li>
+                    </ul>
+                </div>
+                <div class="col">
+                    <h3 class="fs-2">Fonte de origem</h3>
+                    <ul class="list-group list-group-flush">
+                        <?php Homepage::homeAgg('origin'); ?>
+                    </ul>
+                    <h2>Grande área</h2>
+                    <ul class="list-group list-group-flush">
+                        <?php Homepage::homeAgg('area'); ?>
                     </ul>
                 </div>
                 <!--

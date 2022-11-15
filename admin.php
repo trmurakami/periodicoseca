@@ -1,8 +1,9 @@
 <?php
 
 session_start();
-if(!$_SESSION["login"]) {
-    header("Location: login.php"); die();
+if (!$_SESSION["login"]) {
+    header("Location: login.php");
+    die();
 }
 
 ?>
@@ -11,10 +12,10 @@ if(!$_SESSION["login"]) {
 
 <head>
     <?php
-            include('inc/config.php');
-            include('inc/functions.php');
-            include('inc/meta-header.php');
-        ?>
+    include('inc/config.php');
+    include('inc/functions.php');
+    include('inc/meta-header.php');
+    ?>
     <title>Administração</title>
     <script type="text/javascript" src="inc/uikit/js/components/grid.js"></script>
     <script type="text/javascript" src="inc/uikit/js/components/parallax.min.js"></script>
@@ -24,7 +25,7 @@ if(!$_SESSION["login"]) {
     <main role="main">
         <div class="container">
 
-            <?php include('inc/navbar.php')?>
+            <?php include('inc/navbar.php') ?>
             <br /><br /><br /><br />
 
             <h2>Administração</h2>
@@ -50,6 +51,14 @@ if(!$_SESSION["login"]) {
                     <input type="text" class="form-control" id="repositoryName" aria-describedby="repositoryNameHelp"
                         name="repositoryName" placeholder="Nome alternativo da fonte">
                     <small id="repositoryNameHelp" class="form-text text-muted">Informe o nome alternativo para a fonte.
+                        Opcional</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="area">Grande área</label>
+                    <input type="text" class="form-control" id="area" aria-describedby="areaHelp" name="area"
+                        placeholder="Grande área do periódico">
+                    <small id="areaHelp" class="form-text text-muted">Informe a grande área do periódico.
                         Opcional</small>
                 </div>
 
@@ -116,7 +125,7 @@ if(!$_SESSION["login"]) {
                 <p><a href="tools/export.php">Exportar todos os registros</a></p>
             </div>
             <?php Admin::sources("source"); ?>
-            <?php require 'inc/footer.php'?>
+            <?php require 'inc/footer.php' ?>
         </div>
 
     </main>

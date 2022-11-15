@@ -310,6 +310,11 @@ if (isset($_GET["oai"])) {
 
             $id = (string)$rec->header->identifier;
 
+
+            if (isset($_GET["area"])) {
+                $query["doc"]["area"] = $_GET["area"];
+            }
+
             if (!empty($_GET["repositoryName"])) {
                 $query["doc"]["source"] = $_GET["repositoryName"];
             } else {
@@ -448,5 +453,3 @@ if (isset($_GET["oai"])) {
 } else {
     echo "URL não informada";
 }
-
-?>
