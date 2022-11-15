@@ -449,7 +449,7 @@ $mode = "reference";
                         $facets->facet("originalType", 10, "Seções", null, "_term", $_GET);
                         $facets->facet("about", 100, "Assuntos", null, "_term", $_GET);
                         $facets->facet("publisher.organization.name", 100, "Editora", null, "_term", $_GET);
-                        $facets->facet("isPartOf.name", 100, "Nome do periódico", null, "_term", $_GET);
+                        $facets->facet("isPartOf.name", 100, "Fonte", null, "_term", $_GET);
                         $facets->facet("isPartOf.volume", 100, "Volume", null, "_term", $_GET);
                         $facets->facet("isPartOf.issue", 100, "Fascículo", null, "_term", $_GET);
                         $facets->facet("isPartOf.ISSN", 100, "ISSN", null, "_term", $_GET);
