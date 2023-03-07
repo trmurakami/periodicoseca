@@ -115,6 +115,18 @@ if (!$_SESSION["login"]) {
                 <button type="submit" class="btn btn-primary mb-3">Upload</button>
             </form>
 
+            <h4>Upload de arquivo CSV Biblioteca de Teses e Dissertações da CAPES</h4>
+
+            <form class="m-3" action="tools/import_csv_btd_capes.php" method="post" accept-charset="utf-8"
+                enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="formFile" class="form-label">Enviar um arquivo CSV (UTF-8, separado por
+                        tabulações)</label>
+                    <input class="form-control" type="file" id="formFile" name="file">
+                </div>
+                <button type="submit" class="btn btn-primary mb-3">Upload</button>
+            </form>
+
             <h3>Estatísticas</h3>
             <p>Total de registros: <?php echo Admin::totalRecords(); ?></p>
             <p>Total de registros com doi: <?php echo Admin::harvestStatus("doi"); ?></p>

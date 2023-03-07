@@ -312,7 +312,17 @@ class Elasticsearch
                                     'type' => 'integer'
                                 ]
                             ]
-                        ]
+                        ],
+                        'NM_PROGRAMA' => [
+                            'type' => 'text',
+                            'analyzer' => 'portuguese',
+                            'fields' => [
+                                'keyword' => [
+                                    'type' => 'keyword',
+                                    'ignore_above' => 256
+                                ]
+                            ]
+                        ],
                     ]
                 ]
             ];
