@@ -71,11 +71,10 @@ $mode = "reference";
 <body>
 
     <?php
-    if (file_exists("inc/analyticstracking.php")) {
-        include_once "inc/analyticstracking.php";
+    if (file_exists('inc/google_analytics.php')) {
+        include 'inc/google_analytics.php';
     }
     ?>
-
 
     <!-- NAV -->
     <?php require 'inc/navbar.php'; ?>
@@ -201,6 +200,11 @@ $mode = "reference";
                                 <p class="text-muted"><b>Resumo:</b> <?php echo $r["_source"]['description'] ?></p>
                                 <?php endif; ?>
 
+                                <?php if (!empty($r["_source"]['NM_PROGRAMA'])) : ?>
+                                <p class="text-muted"><b>Programa de Pós Graduação:</b>
+                                    <?php echo $r["_source"]['NM_PROGRAMA'] ?></p>
+                                <?php endif; ?>
+
                                 <?php if (!empty($r["_source"]['publisher']['organization']['name'])) : ?>
                                 <p class="text-muted"><b>Editora:</b>
                                     <?php echo $r["_source"]['publisher']['organization']['name']; ?></p>
@@ -214,6 +218,11 @@ $mode = "reference";
                                 <p class="text-muted"><b>DOI:</b> <a
                                         href="http://dx.doi.org/<?php echo $r["_source"]['doi']; ?>"
                                         target="_blank"><?php echo $r["_source"]['doi']; ?></a></p>
+                                <?php endif; ?>
+
+                                <?php if (!empty($r["_source"]['url'])) : ?>
+                                <p class="text-muted"><b>URL:</b> <a href="<?php echo $r["_source"]['url']; ?>"
+                                        target="_blank"><?php echo $r["_source"]['url']; ?></a></p>
                                 <?php endif; ?>
 
                                 <!-- <p class="text-muted"><a class="btn btn-info"
@@ -456,6 +465,8 @@ $mode = "reference";
                         $facets->facet("references.authors", 100, "Autores mais citados nas referências", null, "_term", $_GET);
                         $facets->facet("references.datePublished", 100, "Ano de publicação das obras citadas nas referências", null, "_term", $_GET);
                         $facets->facet("openalex.concepts.display_name", 100, "Openalex Concepts", null, "_term", $_GET);
+                        $facets->facet("inLanguage", 120, "Idioma", "desc", "_term", $_GET);
+                        $facets->facet("NM_PROGRAMA", 120, "Nome do Programa de Pós Graduação", "desc", "_term", $_GET);
                         $facets->facet_range("openalex.cited_by_count", 100, "Citações no Openalex", 'INT');
                         $facets->facetExistsField("doi", 2, "Possui DOI preenchido?", null, "_term", $_GET);
                         $facets->facetExistsField("openalex.id", 2, "Openalex?", null, "_term", $_GET);

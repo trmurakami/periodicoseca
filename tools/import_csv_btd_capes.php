@@ -72,8 +72,20 @@ class CSVRecord
                 $doc["doc"]["type"] = $value;
             }
 
-            
+            if ($header[$key] == "DS_RESUMO") {
+                $doc["doc"]["description"] = $value;
+            }
 
+            if ($header[$key] == "DS_URL_TEXTO_COMPLETO") {
+                $doc["doc"]["url"] = $value;
+            }
+
+            if ($header[$key] == "NM_IDIOMA") {
+                $doc["doc"]["inLanguage"] = $value;
+            }
+
+            
+            
 
             // if ($header[$key] == "about") {
             //     $value = explode("|", $value);
