@@ -193,8 +193,8 @@ if (isset($_GET["oai"])) {
             $recs = $myEndpoint->listRecords('oai_dc');
         }
         foreach ($recs as $rec) {
-            $data = $rec->metadata->children('https://www.openarchives.org/OAI/2.0/oai_dc/');
-            $rows = $data->children('https://purl.org/dc/elements/1.1/');
+            $data = $rec->metadata->children('http://www.openarchives.org/OAI/2.0/oai_dc/');
+            $rows = $data->children('http://purl.org/dc/elements/1.1/');
             
             if (isset($rows->publisher)) {
                 $query["doc"]["isPartOf"]["publisher"]["organization"]["name"] = (string)$rows->publisher;
