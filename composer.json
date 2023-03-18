@@ -4,7 +4,6 @@
     "elasticsearch/elasticsearch": "~7.2",
     "caseyamcl/phpoaipmh": "^3.0",
     "guzzlehttp/guzzle": "^7.0",
-    "gettext/gettext": "^4.1",
-    "renanbr/crossref-client": "^1"
+    "gettext/gettext": "^4.1"
   }
 }
