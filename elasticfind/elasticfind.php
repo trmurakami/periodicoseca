@@ -314,6 +314,13 @@ class Elasticsearch
                                 ]
                             ]
                         ],
+                        'openalex' => [
+                            'properties' => [
+                                'cited_by_count' => [
+                                    'type' => 'integer'
+                                ]
+                            ]
+                        ],
                         'NM_PROGRAMA' => [
                             'type' => 'text',
                             'analyzer' => 'portuguese',
