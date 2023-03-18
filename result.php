@@ -447,7 +447,7 @@ $mode = "reference";
                             $_GET = null;
                         }
 
-                        $facets->facet("type", 100, "Tipo", "", "_term", $_GET);
+                        $facets->facet("type", 100, "Tipo", null, "_term", $_GET);
                         $facets->facet("source", 100, "Título do periódico", null, "_term", $_GET);
                         $facets->facet("area", 100, "Grande área", null, "_term", $_GET);
                         $facets->facet("datePublished", 120, "Ano de publicação", "desc", "_term", $_GET);

@@ -438,7 +438,7 @@ class Facets
         }
         $query["aggs"]["counts"]["terms"]["size"] = $size;
 
-        $response = Elasticsearch::search(null, 0, $query, $alternative_index);
+        $response = Elasticsearch::search(['*'], 0, $query, $alternative_index);
 
         $result_count = count($response["aggregations"]["counts"]["buckets"]);
 
