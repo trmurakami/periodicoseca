@@ -194,6 +194,7 @@ if (isset($_GET["oai"])) {
         }
         foreach ($recs as $rec) {
             $data = $rec->metadata->children('https://www.openarchives.org/OAI/2.0/oai_dc/');
+            var_dump($data);
             if(false !== $data->children('https://purl.org/dc/elements/1.1/')){
                 $rows = $data->children('https://purl.org/dc/elements/1.1/');
             }
