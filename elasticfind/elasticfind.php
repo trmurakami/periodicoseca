@@ -52,7 +52,7 @@ class Elasticsearch
         global $client;
         $params = [];
 
-        if (strlen($alternative_index) > 0) {
+        if ($alternative_index =! null) {
             $params["index"] = $alternative_index;
         } else {
             $params["index"] = $index;
