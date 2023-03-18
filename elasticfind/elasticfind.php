@@ -52,12 +52,13 @@ class Elasticsearch
         global $client;
         $params = [];
 
-        if ($alternative_index =! null) {
-            $params["index"] = $alternative_index;
-        } else {
-            $params["index"] = $index;
-        }
-
+        // if ($alternative_index =! null) {
+        //     $params["index"] = $alternative_index;
+        // } else {
+        //     $params["index"] = $index;
+        // }
+        
+        $params["index"] = $index;
         $params["_source"] = $fields;
         $params["size"] = $size;
         $params["body"] = $body;
