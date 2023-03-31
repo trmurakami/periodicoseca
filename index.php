@@ -92,8 +92,8 @@
                     </ul>
                     <h2>Teses e dissertações</h2>
                     <ul class="list-group list-group-flush">
-                        <?php Homepage::fieldAgg("source", "TESE"); ?>
-                        <?php Homepage::fieldAgg("source", "DISSERTAÇÃO"); ?>
+                        <?php Homepage::fieldAgg("type", "TESE"); ?>
+                        <?php Homepage::fieldAgg("type", "DISSERTAÇÃO"); ?>
                     </ul>
                 </div>
                 <div class="col">
