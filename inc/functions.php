@@ -859,7 +859,7 @@ class Homepage
 
             echo '<div class="card mt-2">';
             if (!empty($r["_source"]['source'])){
-                echo '<div class="card-header">' . $r["_source"]['source'] . '</div><div class="card-header">' . $r["_source"]['source'] . '</div>';                
+                echo '<div class="card-header">' . $r["_source"]['source'] . '</div>';                
             }
             echo '<div class="card-body">';
 
