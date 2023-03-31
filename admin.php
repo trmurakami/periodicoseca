@@ -142,6 +142,7 @@ if (!$_SESSION["login"]) {
             <p>Registros coletados no <a href="https://openalex.org/" target="_blank">Openalex</a>:
                 <?php echo Admin::harvestStatus("openalex"); ?></p>
             <p><a href="tools/openalex.php?size=10">Coletar Openalex</a></p>
+            <p><a href="tools/get_doi_from_openalex.php?size=1">Coletar DOI por Título no OpenAlex</a></p>
 
             <h3>Fontes coletadas</h3>
             <div class="uk-alert-primary" uk-alert>

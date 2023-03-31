@@ -29,22 +29,22 @@ $params["size"] = $_GET["size"];
 
 $cursor = $client->search($params);
 
-echo "Resultado: $total";
+echo "Resultado: $total<br/><br/>";
+
 
 foreach ($cursor["hits"]["hits"] as $r) {
     //var_dump($r['fields']['name'][0]);
-    //$openalex_result = file_get_contents('https://api.openalex.org/autocomplete/works?q='.$r['fields']['name'][0].'');
+    //$openalex_result = file_get_contents('https://api.openalex.org/works?search="'.$r['fields']['name'][0].'"&per_page=1');
     $openalex_result = openalexGetDOI($r['fields']['name'][0]);
-    //var_dump($openalex_result);
+    unset($openalex_result["results"][0]['abstract_inverted_index']);
+    //var_dump($openalex_result["results"]);
     if ($openalex_result['meta']['count'] === 1) {
-        $body["doc"]["openalex"] = $openalex_result;
+        $body["doc"]["openalex"] = $openalex_result["results"][0];
     } else {        
         $body["doc"]["openalex"]['empty'] = true;
         $upsert_openalex = Elasticsearch::update($r["_id"], $body);
     }
-     $body["doc_as_upsert"] = true;
-     var_dump($body);
+    $body["doc_as_upsert"] = true;
+    //var_dump($body);
     $upsert_openalex = Elasticsearch::update($r["_id"], $body);
-    ob_flush();
-    flush();
 }
