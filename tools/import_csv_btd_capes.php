@@ -34,12 +34,12 @@ if (isset($_FILES['file'])) {
     define("HEADER", $array_values);
 
     while (($row = fgetcsv($fh, 1888192, "\t")) !== false) {
-        $doc = CSVRecord::build($row, HEADER);
+        $doc = CSVThesisRecord::build($row, HEADER);
         $sha_string = recursive_implode($doc);
         $sha256 = hash('sha256', $sha_string);
-        print_r($sha256);
-        echo '<br/>';
-        print_r($doc);
+        //print_r($sha256);
+        //echo '<br/>';
+        //print_r($doc);
         $resultado_elastic = Elasticsearch::update($sha256, $doc);
         //print_r($resultado_elastic);
     }
@@ -48,7 +48,7 @@ if (isset($_FILES['file'])) {
 //sleep(5);
 //echo '<script>window.location = \'result.php?filter[]=type:"Work"&filter[]=tag:"'.$_POST["tag"].'"\'</script>';
 
-class CSVRecord
+class CSVThesisRecord
 {
     public static function build($row, $header)
     {
@@ -70,6 +70,7 @@ class CSVRecord
 
             if ($header[$key] == "NM_SUBTIPO_PRODUCAO") {
                 $doc["doc"]["type"] = $value;
+                //$doc["doc"]["source"] = $value;
             }
 
             if ($header[$key] == "DS_RESUMO") {
@@ -83,6 +84,23 @@ class CSVRecord
             if ($header[$key] == "NM_IDIOMA") {
                 $doc["doc"]["inLanguage"] = $value;
             }
+
+            if ($header[$key] == "NM_DISCENTE") {
+                $doc["doc"]["author"][0]["person"]["name"] = $value;
+            }
+
+            if ($header[$key] == "NM_ENTIDADE_ENSINO") {
+                $doc["doc"]["author"][0]["organization"]["name"] = $value;
+            }
+
+            if ($header[$key] == "DS_PALAVRA_CHAVE") {
+                $value_array = explode(";", $value);
+                foreach($value_array as $palavra_chave) {
+                    $doc["doc"]["about"][] = $palavra_chave;
+                }
+            }
+
+            
 
             
             

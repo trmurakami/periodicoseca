@@ -90,6 +90,11 @@
                     <ul class="list-group list-group-flush">
                         <?php Homepage::fieldAgg("source", "E-book"); ?>
                     </ul>
+                    <h2>Teses e dissertações</h2>
+                    <ul class="list-group list-group-flush">
+                        <?php Homepage::fieldAgg("source", "TESE"); ?>
+                        <?php Homepage::fieldAgg("source", "DISSERTAÇÃO"); ?>
+                    </ul>
                 </div>
                 <div class="col">
                     <h3 class="fs-2">Estatísticas</h3>
