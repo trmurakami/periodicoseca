@@ -328,23 +328,6 @@ $mode = "reference";
                                 </li>
                                 <?php endif; ?>
 
-                                <?php if (isset($_SESSION["login"])) : ?>
-                                <br /><br />
-                                <form class="form-signin" method="post" action="editor/index.php">
-                                    <?php
-                                            $jsonRecord = json_encode($r["_source"]);
-                                            ?>
-                                    <input type="hidden" id="rppbci_id" name="rppbci_id"
-                                        value="<?php echo $r["_id"] ?>">
-                                    <input type="hidden" id="record" name="record"
-                                        value="<?php echo urlencode($jsonRecord) ?>">
-                                    <button class="btn btn-lg btn-warning btn-block" type="submit">Editar
-                                        registro</button>
-                                    <p class="mt-5 mb-3 text-muted"><?= $errorMsg ?></p>
-                                </form>
-
-                                <?php endif; ?>
-
                                 <?php //print("<pre>".print_r($r['_source'], true)."</pre>"); 
                                     ?>
 
