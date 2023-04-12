@@ -127,7 +127,7 @@ class Elasticsearch
      * 
      * @return array Resposta do comando
      */
-    public static function deleteByQuery($_id, $body, $alternative_index = "")
+    public static function deleteByQuery($body, $alternative_index = "")
     {
         global $index;
         global $client;
@@ -138,8 +138,7 @@ class Elasticsearch
         } else {
             $params["index"] = $index;
         }
-
-        $params["_source"] = $_id;
+                
         $params["body"] = $body;
 
         $response = $client->deleteByQuery($params);
