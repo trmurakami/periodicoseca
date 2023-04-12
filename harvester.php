@@ -434,14 +434,12 @@ if (isset($_GET["oai"])) {
         echo "Formato de metadados não definido"; 
     }
 } elseif (isset($_GET["delete"])) {
-    echo $_GET["delete"];
-    echo '<br/>';
-    echo $_GET["delete_name"];
+    $delete_name = $_GET["delete_name"];
 
     $delete_repository = Elasticsearch::delete($_GET["delete"]);
     print_r($delete_repository);
     echo '<br/>';
-    $body["query"]["match"]["source"]["query"] = "'.$_GET["delete_name"].'";
+    $body["query"]["match"]["source"]["query"] = "$delete_name";
     print_r($body);
     echo '<br/><br/>';
     $delete_records = Elasticsearch::deleteByQuery($body);
