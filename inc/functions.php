@@ -912,33 +912,32 @@ class Homepage
                 $i++;
             }
 
-
-            echo '<li class="list-group-item d-flex justify-content-between align-items-center">';
-            echo '<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#' . str_replace(".", "", $field) . 'Modal">ver todos >>></button>  ';
-            echo '</li>';
-            echo '</ul>';
-            echo '<div class="modal fade" id="' . str_replace(".", "", $field) . 'Modal" tabindex="-1" role="dialog" aria-labelledby="' . str_replace(".", "", $field) . 'ModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
+            echo '<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#' . str_replace(".", "", $field) . 'Modal">
+            ver todos >>>
+            </button>';            
+            echo '<div class="modal fade" id="' . str_replace(".", "", $field) . 'Modal" tabindex="-1" aria-labelledby="' . str_replace(".", "", $field) . 'ModalLabel" aria-hidden="true">';
+            echo '<div class="modal-dialog">
                 <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="' . $field . 'ModalLabel">' . $field . '</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="' . str_replace(".", "", $field) . 'ModalLabel">' . $field . '</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                  <ul class="list-group list-group-flush">';
+                  
+                  foreach ($response["aggregations"]["group_by_state"]["buckets"] as $facets) {
+                    echo '<li class="list-group-item"><a href="result.php?filter[]=' . $field . ':&quot;' . urlencode($facets['key']) . '&quot;">' . $facets['key'] . ' (' . number_format($facets['doc_count'], 0, ',', '.') . ')</a></li>';
+                  }
+
+                  echo '</ul></div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                  </div>
                 </div>
-                <div class="modal-body">
-                    <ul class="list-group list-group-flush">';
-            foreach ($response["aggregations"]["group_by_state"]["buckets"] as $facets) {
-                echo '<li class="list-group-item"><a href="result.php?filter[]=' . $field . ':&quot;' . urlencode($facets['key']) . '&quot;">' . $facets['key'] . ' (' . number_format($facets['doc_count'], 0, ',', '.') . ')</a></li>';
-            }
-            echo '</ul>';
-            echo '
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                </div>
-                </div>
-            </div></div></div>
-            ';
+              </div>
+            </div>'
+            ;
         }
     }
 
