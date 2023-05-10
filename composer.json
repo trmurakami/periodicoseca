@@ -1,9 +1,9 @@
 {
   "require": {
-    "facebook/graph-sdk": "~5.0",
     "elasticsearch/elasticsearch": "~7.2",
     "caseyamcl/phpoaipmh": "^3.0",
     "guzzlehttp/guzzle": "^7.0",
-    "gettext/gettext": "^4.1"
+    "gettext/gettext": "^4.1",
+    "nickdnk/graph-sdk": "^7.0"
   }
 }

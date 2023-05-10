@@ -313,6 +313,16 @@ $mode = "reference";
 
                                 <?php endif; ?>
 
+                                <?php if (!empty($r["_source"]['opencitations']['citation_count'])) : ?>
+
+                                <div class="alert alert-success" role="alert">
+                                    Quantidade de vezes em que o artigo foi citado no OpenCitations:
+                                    <?php echo $r["_source"]['opencitations']['citation_count'] ?> (Fonte:
+                                    OpenCitations API)
+                                </div>
+
+                                <?php endif; ?>
+
                                 <?php if (!empty($r["_source"]['doi'])) : ?>
                                 <div data-badge-popover="right" data-badge-type="1"
                                     data-doi="<?php echo $r["_source"]['doi']; ?>" data-hide-no-mentions="true"
@@ -453,6 +463,8 @@ $mode = "reference";
                         $facets->facet_range("openalex.cited_by_count", 100, "Citações no Openalex", 'INT');
                         $facets->facetExistsField("doi", 2, "Possui DOI preenchido?", null, "_term", $_GET);
                         $facets->facetExistsField("openalex.id", 2, "Openalex?", null, "_term", $_GET);
+                        $facets->facetExistsField("opencitations.citation_count", 2, "OpenCitations?", null, "_term", $_GET);
+                        $facets->facet_range("opencitations.citation_count", 100, "Citações no OpenCitations", 'INT');
                         ?>
 
                     </div>

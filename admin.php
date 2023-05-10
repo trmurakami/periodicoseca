@@ -85,9 +85,9 @@ if (!$_SESSION["login"]) {
                 <div class="form-group">
                     <label for="metadataFormat">Formato de metadados</label>
                     <select class="form-control" id="metadataFormat" name="metadataFormat">
-                        <option value="nlm">nlm (padrão)</option>
-                        <option value="rfc1807">rfc1807</option>
-                        <option value="oai_dc">oai_dc</option>
+                        <option value="oai_dc" selected>oai_dc</option>
+                        <option value="nlm">nlm</option>
+                        <option value="rfc1807">rfc1807</option>                        
                     </select>
                 </div>
 
@@ -143,6 +143,11 @@ if (!$_SESSION["login"]) {
                 <?php echo Admin::harvestStatus("openalex"); ?></p>
             <p><a href="tools/openalex.php?size=10">Coletar Openalex</a></p>
             <p><a href="tools/get_doi_from_openalex.php?size=1">Coletar DOI por Título no OpenAlex</a></p>
+
+            <h3>OpenCitations</h3>
+            <p>Registros coletados no <a href="https://opencitations.net/" target="_blank">OpenCitations</a>:
+                <?php echo Admin::harvestStatus("opencitations"); ?></p>
+            <p><a href="tools/opencitations.php?size=10">Coletar citações no OpenCitations</a></p>
 
             <h3>Fontes coletadas</h3>
             <div class="uk-alert-primary" uk-alert>

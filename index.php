@@ -106,6 +106,9 @@
                         <li class="list-group-item">Citações via Crossref API: <a
                                 href="result.php?search=crossref.message.is-referenced-by-count:[1 TO *]"><?php echo Homepage::sumFieldAggCrossref(); ?></a>
                         </li>
+                        <li class="list-group-item">Citações via OpenCitations API: <a
+                                href="result.php?search=opencitations.citation_count:[1 TO *]"><?php echo Homepage::sumFieldAggOpenCitations(); ?></a>
+                        </li>
                     </ul>
                 </div>
                 <div class="col">

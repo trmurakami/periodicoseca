@@ -320,6 +320,13 @@ class Elasticsearch
                                 ]
                             ]
                         ],
+                        'opencitations' => [
+                            'properties' => [
+                                'citation_count' => [
+                                    'type' => 'integer'
+                                ]
+                            ]
+                        ],
                         'NM_PROGRAMA' => [
                             'type' => 'text',
                             'analyzer' => 'portuguese',
