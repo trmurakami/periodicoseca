@@ -223,7 +223,7 @@ $mode = "reference";
                                 <?php if (!empty($r["_source"]['openalex'])) : ?>
                                     <?php if (!is_null($r["_source"]['openalex']['doi'])) : ?>
                                         <p class="text-muted">
-                                            <b>DOI:</b> <a href="http://dx.doi.org/<?php echo $r["_source"]['openalex']['doi']; ?>"
+                                            <b>DOI:</b> <a href="<?php echo $r["_source"]['openalex']['doi']; ?>"
                                             target="_blank"><?php echo $r["_source"]['openalex']['doi']; ?></a>
                                         </p>
                                     <?php endif; ?>
