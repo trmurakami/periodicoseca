@@ -37,14 +37,15 @@ foreach ($cursor["hits"]["hits"] as $r) {
     //$openalex_result = file_get_contents('https://api.openalex.org/works?search="'.$r['fields']['name'][0].'"&per_page=1');
     $openalex_result = openalexGetDOI($r['fields']['name'][0]);
     unset($openalex_result["results"][0]['abstract_inverted_index']);
-    //var_dump($openalex_result["results"]);
     if ($openalex_result['meta']['count'] === 1) {
         $body["doc"]["openalex"] = $openalex_result["results"][0];
+        if (!is_null($openalex_result["results"][0]['doi'])) {
+            $body["doc"]['doi'] = str_replace("https://doi.org/", "", $openalex_result["results"][0]['doi']);;
+        }
     } else {        
         $body["doc"]["openalex"]['empty'] = true;
         $upsert_openalex = Elasticsearch::update($r["_id"], $body);
     }
     $body["doc_as_upsert"] = true;
-    //var_dump($body);
     $upsert_openalex = Elasticsearch::update($r["_id"], $body);
 }

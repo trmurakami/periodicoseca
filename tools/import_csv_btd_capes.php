@@ -25,8 +25,6 @@ function recursive_implode(array $array, $glue = ',', $include_keys = false, $tr
 
 if (isset($_FILES['file'])) {
 
-    var_dump($_REQUEST["area"]);
-
     if (isset($_REQUEST["area"])) {
         $area = $_REQUEST["area"];
     } else {
