@@ -113,7 +113,7 @@ $mode = "reference";
                     <?php endif; ?>
 
                     <!-- Resultados -->
-                    <?php foreach ($cursor["hits"]["hits"] as $r) : ?>
+                    <?php foreach ($cursor["hits"]["hits"] as $r) : ?>                    
 
                     <div class="card mt-1">
                         <div class="card-body">
@@ -218,6 +218,15 @@ $mode = "reference";
                                 <p class="text-muted"><b>DOI:</b> <a
                                         href="http://dx.doi.org/<?php echo $r["_source"]['doi']; ?>"
                                         target="_blank"><?php echo $r["_source"]['doi']; ?></a></p>
+                                <?php endif; ?>
+
+                                <?php if (!empty($r["_source"]['openalex'])) : ?>
+                                    <?php if (!is_null($r["_source"]['openalex']['doi'])) : ?>
+                                        <p class="text-muted">
+                                            <b>DOI:</b> <a href="http://dx.doi.org/<?php echo $r["_source"]['openalex']['doi']; ?>"
+                                            target="_blank"><?php echo $r["_source"]['openalex']['doi']; ?></a>
+                                        </p>
+                                    <?php endif; ?>
                                 <?php endif; ?>
 
                                 <?php if (!empty($r["_source"]['url'])) : ?>
