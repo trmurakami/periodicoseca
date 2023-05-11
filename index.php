@@ -121,12 +121,14 @@
                         <?php Homepage::homeAgg('area'); ?>
                     </ul>
                 </div>
+                <!--
                 <div class="col">
                     <h3 class="fs-2">Interações no facebook</h3>
                     <ul class="list-group list-group-flush">
-                        <?php Homepage::sumFieldAggFacebook(); ?>
+                        < ?php Homepage::sumFieldAggFacebook(); ?>
                     </ul>
                 </div>
+                -->
             </div>
 
             <hr class="mt-5">
