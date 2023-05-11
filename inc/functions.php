@@ -881,6 +881,8 @@ class Homepage
             echo '<div class="card mt-2">';
             if (!empty($r["_source"]['source'])){
                 echo '<div class="card-header">' . $r["_source"]['source'] . '</div>';                
+            } else {
+                echo '<div class="card-header">' . $r["_source"]['type'] . '</div>';
             }
             echo '<div class="card-body">';
 
