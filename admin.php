@@ -123,6 +123,14 @@ if (!$_SESSION["login"]) {
                     <label for="formFile" class="form-label">Enviar um arquivo CSV (UTF-8, separado por
                         tabulações)</label>
                     <input class="form-control" type="file" id="formFile" name="file">
+
+                    <label for="area">Grande área</label>
+                    <input type="text" class="form-control" id="area" aria-describedby="areaHelp" name="area"
+                        placeholder="Grande área">
+                    <small id="areaHelp" class="form-text text-muted">Informe a grande área.
+                        Opcional</small>
+
+
                 </div>
                 <button type="submit" class="btn btn-primary mb-3">Upload</button>
             </form>

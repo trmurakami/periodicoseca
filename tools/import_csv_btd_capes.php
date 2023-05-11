@@ -25,6 +25,14 @@ function recursive_implode(array $array, $glue = ',', $include_keys = false, $tr
 
 if (isset($_FILES['file'])) {
 
+    var_dump($_REQUEST["area"]);
+
+    if (isset($_REQUEST["area"])) {
+        $area = $_REQUEST["area"];
+    } else {
+        $area = "";
+    }
+
     $fh = fopen($_FILES['file']['tmp_name'], 'r+');
     $row = fgetcsv($fh, 108192, "\t");
 
@@ -34,7 +42,7 @@ if (isset($_FILES['file'])) {
     define("HEADER", $array_values);
 
     while (($row = fgetcsv($fh, 1888192, "\t")) !== false) {
-        $doc = CSVThesisRecord::build($row, HEADER);
+        $doc = CSVThesisRecord::build($row, HEADER, $area);
         $sha_string = recursive_implode($doc);
         $sha256 = hash('sha256', $sha_string);
         //print_r($sha256);
@@ -50,7 +58,7 @@ if (isset($_FILES['file'])) {
 
 class CSVThesisRecord
 {
-    public static function build($row, $header)
+    public static function build($row, $header, $area)
     {
         foreach ($row as $key => $value) {
 
@@ -99,53 +107,8 @@ class CSVThesisRecord
                     $doc["doc"]["about"][] = $palavra_chave;
                 }
             }
-
-            
-
-            
-            
-
-            // if ($header[$key] == "about") {
-            //     $value = explode("|", $value);
-            //     $value = array_map('trim', $value);
-            // }
-            // if ($header[$key] == "language") {
-            //     $value = explode("|", $value);
-            //     $value = array_map('trim', $value);
-            // }            
-            // if ($header[$key] == "author.person.name") {
-            //     $value = explode("|", $value);
-            // }
-            // if (strpos($header[$key], '.') !== false) {
-            //     $header_array = explode(".", $header[$key]);
-            //     $count_array = count($header_array);
-            //     if ($count_array == 2) {
-            //         $doc["doc"][$header_array[0]][$header_array[1]] = $value;
-            //     }
-            //     if ($count_array == 3) {
-            //         $doc["doc"][$header_array[0]][$header_array[1]][$header_array[2]] = $value;
-            //     }
-            //     if ($count_array == 4) {
-            //         $doc["doc"][$header_array[0]][$header_array[1]][$header_array[2]][$header_array[3]] = $value;
-            //     }
-            //     if (isset($doc["doc"]["author"]["person"]["name"])) {
-            //         if (count($doc["doc"]["author"]["person"]["name"]) > 0) {
-            //             $i = 0;
-            //             foreach ($doc["doc"]["author"]["person"]["name"] as $author_name) {
-            //                 $doc["doc"]["author"][$i]["person"]["name"] = $author_name;
-            //                 $i++;
-            //             }
-            //         } else {
-            //             $doc["doc"]["author"][0]["person"]["name"] = $doc["doc"]["author"]["person"]["name"];
-            //         }
-            //         unset($doc["doc"]["author"]["person"]);
-            //     }
-
-            // } else {
-            //     $doc["doc"][$header[$key]] = $value;
-            // }
-            
         }
+        $doc["doc"]["area"] = $area;
         $doc["doc_as_upsert"] = true;
         return $doc;
     }
