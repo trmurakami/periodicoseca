@@ -31,9 +31,7 @@ foreach ($cursor["hits"]["hits"] as $r) {
     //print("<pre>".print_r($opencitations_result, true)."</pre>");
     $body["doc"]["opencitations"]['citation_count'] = $opencitations_result[0]['count'];
     $body["doc_as_upsert"] = true;
-    print("<pre>".print_r($body, true)."</pre>");
     $upsert_opencitations = Elasticsearch::update($r["_id"], $body);
-    print("<pre>" . print_r($upsert_opencitations, true) . "</pre>");
     ob_flush();
     flush();
 }
