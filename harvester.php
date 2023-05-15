@@ -439,7 +439,7 @@ if (isset($_GET["oai"])) {
     $delete_repository = Elasticsearch::delete($_GET["delete"]);
     print_r($delete_repository);
     echo '<br/>';
-    $body["query"]["match"]["source"]["query"] = "$delete_name";
+    $body["query"]["query_string"]["query"] = 'source:"'.$delete_name.'"';
     print_r($body);
     echo '<br/><br/>';
     $delete_records = Elasticsearch::deleteByQuery($body);
