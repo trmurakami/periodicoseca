@@ -436,7 +436,7 @@ if (isset($_GET["oai"])) {
 } elseif (isset($_GET["delete"])) {
     $delete_name = $_GET["delete_name"];
 
-    $delete_repository = Elasticsearch::delete($_GET["delete"]);
+    $delete_repository = Elasticsearch::delete($_GET["delete"], $indexAdm);
     print_r($delete_repository);
     echo '<br/>';
     $body["query"]["query_string"]["query"] = 'source:"'.$delete_name.'"';
