@@ -142,10 +142,6 @@ if (!$_SESSION["login"]) {
             <p>Registros coletados no Facebook: <?php echo Admin::harvestStatus("facebook"); ?></p>
             <p><a href="tools/coleta_facebook.php">Coletar facebook</a></p>
 
-            <h3>Crossref</h3>
-            <p>Registros coletados na Crossref: <?php echo Admin::harvestStatus("crossref"); ?></p>
-            <p><a href="tools/crossref.php?size=10">Coletar Crossref</a></p>
-
             <h3>Openalex</h3>
             <p>Registros coletados no <a href="https://openalex.org/" target="_blank">Openalex</a>:
                 <?php echo Admin::harvestStatus("openalex"); ?></p>
