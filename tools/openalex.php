@@ -27,6 +27,7 @@ $cursor = $client->search($params);
 echo "Resultado: $total";
 
 foreach ($cursor["hits"]["hits"] as $r) {
+    $body = [];
     // //print("<pre>".print_r($r, true)."</pre>");
     // //print("<pre>".print_r($r["_source"]["doi"], true)."</pre>");    
     $openalex_result = openalexAPI($r["_source"]["doi"]);
@@ -40,6 +41,7 @@ foreach ($cursor["hits"]["hits"] as $r) {
     $body["doc_as_upsert"] = true;
     // //print("<pre>".print_r($body, true)."</pre>");
     $upsert_openalex = Elasticsearch::update($r["_id"], $body);
+    unset($openalex_result);
     // print("<pre>" . print_r($upsert_openalex, true) . "</pre>");
     // //sleep(11);
     ob_flush();
