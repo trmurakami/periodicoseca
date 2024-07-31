@@ -87,7 +87,7 @@ if (!$_SESSION["login"]) {
                     <select class="form-control" id="metadataFormat" name="metadataFormat">
                         <option value="oai_dc" selected>oai_dc</option>
                         <option value="nlm">nlm</option>
-                        <option value="rfc1807">rfc1807</option>                        
+                        <option value="rfc1807">rfc1807</option>
                     </select>
                 </div>
 
@@ -138,9 +138,6 @@ if (!$_SESSION["login"]) {
             <h3>Estatísticas</h3>
             <p>Total de registros: <?php echo Admin::totalRecords(); ?></p>
             <p>Total de registros com doi: <?php echo Admin::harvestStatus("doi"); ?></p>
-            <h3>Status da coleta do Facebook</h3>
-            <p>Registros coletados no Facebook: <?php echo Admin::harvestStatus("facebook"); ?></p>
-            <p><a href="tools/coleta_facebook.php">Coletar facebook</a></p>
 
             <h3>Openalex</h3>
             <p>Registros coletados no <a href="https://openalex.org/" target="_blank">Openalex</a>:
