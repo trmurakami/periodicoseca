@@ -20,67 +20,26 @@ if (!empty($_GET["field"])) {
     $cursor = $client->search($params);
 
     $total = $cursor["hits"]["total"];
-    //$content[] = $_GET["field"];
-    foreach ($cursor["hits"]["hits"] as $r) {
-        unset($fields);
-        $fieldArray = explode(".", $_GET["field"]);
-        $count = count($fieldArray);
-        if (isset($r["_source"][$fieldArray[0]])) {
-            if ($count == 1) {
-                $fields[] = $r["_source"][$fieldArray[0]];
-            } elseif ($count == 2) {
-                foreach ($r["_source"][$fieldArray[0]] as $field) {
-                    $fields[] = $field[$fieldArray[1]];
-                }                  
-                $fields[] = $r["_source"][$fieldArray[0]][$fieldArray[1]];                
-            } elseif ($count == 3) {
-                foreach ($r["_source"][$fieldArray[0]] as $field) {
-                    $fields[] = $field[$fieldArray[1]][$fieldArray[2]];
-                }                
-            } else {
-                foreach ($r["_source"][$fieldArray[0]] as $field) {
-                    $fields[] = $field[$fieldArray[1]][$fieldArray[2]][$fieldArray[3]];
-                }
-            }
-        }
-        $content[] = implode("\n", $fields);
-        unset($fields);
-    }
+
     while (isset($cursor['hits']['hits']) && count($cursor['hits']['hits']) > 0) {
         $scroll_id = $cursor['_scroll_id'];
         $cursor = $client->scroll(
             [
-            "scroll_id" => $scroll_id,
-            "scroll" => "30s"
+                "scroll_id" => $scroll_id,
+                "scroll" => "30s"
             ]
         );
         foreach ($cursor["hits"]["hits"] as $r) {
-            unset($fields);
+            $fieldRow = [];
             $fieldArray = explode(".", $_GET["field"]);
             $count = count($fieldArray);
-            if (isset($r["_source"][$fieldArray[0]])) {
-                if ($count == 1) {
-                    $fields[] = $r["_source"][$fieldArray[0]];
-                } elseif ($count == 2) {
-                    foreach ($r["_source"][$fieldArray[0]] as $field) {
-                        $fields[] = $field[$fieldArray[1]];
-                    }                  
-                    $fields[] = $r["_source"][$fieldArray[0]][$fieldArray[1]];                
-                } elseif ($count == 3) {
-                    foreach ($r["_source"][$fieldArray[0]] as $field) {
-                        $fields[] = $field[$fieldArray[1]][$fieldArray[2]];
-                    }                
-                } else {
-                    foreach ($r["_source"][$fieldArray[0]] as $field) {
-                        $fields[] = $field[$fieldArray[1]][$fieldArray[2]][$fieldArray[3]];
-                    }
-                }
+            //echo "<pre>" . print_r($r, true) . "</pre>";
+            foreach ($r['_source'][$_GET["field"]] as $field) {
+                $fieldRow[] = trim($field);
             }
-            $content[] = implode("\n", $fields);
-            unset($fields);
+            $content[] = implode("|", $fieldRow);
+            unset($fieldRow);
         }
     }
     echo implode("\n", $content);
 }
-
-
