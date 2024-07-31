@@ -42,15 +42,15 @@ $cursor = $client->search($params);
 
 
 
-/* Citeproc-PHP*/
-require 'inc/citeproc-php/CiteProc.php';
-$csl_abnt = file_get_contents('inc/citeproc-php/style/abnt.csl');
-$csl_apa = file_get_contents('inc/citeproc-php/style/apa.csl');
-$csl_nlm = file_get_contents('inc/citeproc-php/style/nlm.csl');
-$csl_vancouver = file_get_contents('inc/citeproc-php/style/vancouver.csl');
-$lang = "br";
-$citeproc_abnt = new citeproc($csl_abnt, $lang);
-$mode = "reference";
+// /* Citeproc-PHP*/
+// require 'inc/citeproc-php/CiteProc.php';
+// $csl_abnt = file_get_contents('inc/citeproc-php/style/abnt.csl');
+// $csl_apa = file_get_contents('inc/citeproc-php/style/apa.csl');
+// $csl_nlm = file_get_contents('inc/citeproc-php/style/nlm.csl');
+// $csl_vancouver = file_get_contents('inc/citeproc-php/style/vancouver.csl');
+// $lang = "br";
+// $citeproc_abnt = new citeproc($csl_abnt, $lang);
+// $mode = "reference";
 
 ?>
 <html>
@@ -113,7 +113,7 @@ $mode = "reference";
                     <?php endif; ?>
 
                     <!-- Resultados -->
-                    <?php foreach ($cursor["hits"]["hits"] as $r) : ?>                    
+                    <?php foreach ($cursor["hits"]["hits"] as $r) : ?>
 
                     <div class="card mt-1">
                         <div class="card-body">
@@ -221,12 +221,12 @@ $mode = "reference";
                                 <?php endif; ?>
 
                                 <?php if (!empty($r["_source"]['openalex'])) : ?>
-                                    <?php if (!is_null($r["_source"]['openalex']['doi'])) : ?>
-                                        <p class="text-muted">
-                                            <b>DOI:</b> <a href="<?php echo $r["_source"]['openalex']['doi']; ?>"
-                                            target="_blank"><?php echo $r["_source"]['openalex']['doi']; ?></a>
-                                        </p>
-                                    <?php endif; ?>
+                                <?php if (!is_null($r["_source"]['openalex']['doi'])) : ?>
+                                <p class="text-muted">
+                                    <b>DOI:</b> <a href="<?php echo $r["_source"]['openalex']['doi']; ?>"
+                                        target="_blank"><?php echo $r["_source"]['openalex']['doi']; ?></a>
+                                </p>
+                                <?php endif; ?>
                                 <?php endif; ?>
 
                                 <?php if (!empty($r["_source"]['url'])) : ?>
@@ -238,29 +238,6 @@ $mode = "reference";
                                         href="node.php?_id=< ?php echo $r["_id"]; ?>" target="_blank"><b>Ver registro
                                             completo</b></a></p>
                                 -->
-
-                                <?php if (!empty($r["_source"]['facebook']['facebook_total'])) : ?>
-
-                                <table class="table">
-                                    <caption>Interações no Facebook</caption>
-                                    <thead>
-                                        <tr>
-                                            <th>Reactions</th>
-                                            <th>Comentários</th>
-                                            <th>Compartilhamentos</th>
-                                            <th>Total</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td><?php echo $r["_source"]['facebook']['reaction_count']; ?></td>
-                                            <td><?php echo $r["_source"]['facebook']['comment_count']; ?></td>
-                                            <td><?php echo $r["_source"]['facebook']['share_count']; ?></td>
-                                            <td><?php echo $r["_source"]['facebook']['facebook_total']; ?></td>
-                                        </tr>
-                                    </tbody>
-                                </table><br />
-                                <?php endif; ?>
 
                                 <?php if (!empty($r["_source"]['references'])) : ?>
                                 <!-- Button trigger modal -->
@@ -392,35 +369,6 @@ $mode = "reference";
                                                 </form>
                                             < ?php endif; ?>
                                         < ?php endif; ?>
-                                        
-                                        <li class="uk-h6 uk-margin-top">
-                                            <p>Métricas:</p>
-
-                                            
-                                            < !--
-                                            <ul>
-                                                <li>
-                                                    < ?php Facebook::facebook_data($r["_source"]['relation'], $r["_id"]);?>
-                                                    < ?php
-                                                        if (!empty($r["_source"]['relation'])){
-                                                            facebook::facebook_api_reactions($r["_source"]['relation'],$fb,$server,$r['_id']);
-                                                            unset($facebook_url_array);
-                                                        }
-                                                    ?>
-                                                    
-                                                </li>
-                                                <li>
-                                                    < ?php if (isset($r["_source"]['div_cientifica'])) : ?>
-                                                        < ?php foreach ($r["_source"]['div_cientifica'] as $div_source) :?>
-                                                        < ?php $url_array[] = $div_source['url']; ?>
-                                                        < ?php endforeach; ?>
-                                                        < ?php Facebook::facebook_divulgacao($url_array, $r["_id"]);?>
-                                                        < ?php unset($url_array);?>
-                                                    < ?php endif; ?>
-                                                </li>
-
-                                            </ul>
-                                        </li>
                                     </ul>
                                 </div>
                             </div>
@@ -451,8 +399,7 @@ $mode = "reference";
 
                         $facets->facet("type", 100, "Tipo", null, "_term", $_GET);
                         $facets->facet("source", 100, "Título do periódico", null, "_term", $_GET);
-                        $facets->facet("area", 100, "Grande área", null, "_term", $_GET);
-                        $facets->facet("datePublished", 120, "Ano de publicação", "desc", "_term", $_GET);
+                        $facets->facet("datePublished", 120, "Ano de publicação", null, "_term", $_GET);
                         $facets->facet("author.person.name", 120, "Autores", null, "_term", $_GET);
                         $facets->facet("author.organization.name", 120, "Afiliação", null, "_term", $_GET);
                         $facets->facet("openalex.authorships.raw_affiliation_string", 120, "Afiliação obtida pelo Openalex", null, "_term", $_GET);
@@ -467,8 +414,8 @@ $mode = "reference";
                         $facets->facet("references.authors", 100, "Autores mais citados nas referências", null, "_term", $_GET);
                         $facets->facet("references.datePublished", 100, "Ano de publicação das obras citadas nas referências", null, "_term", $_GET);
                         $facets->facet("openalex.concepts.display_name", 100, "Openalex Concepts", null, "_term", $_GET);
-                        $facets->facet("inLanguage", 120, "Idioma", "desc", "_term", $_GET);
-                        $facets->facet("NM_PROGRAMA", 120, "Nome do Programa de Pós Graduação", "desc", "_term", $_GET);
+                        $facets->facet("inLanguage", 120, "Idioma", null, "_term", $_GET);
+                        $facets->facet("NM_PROGRAMA", 120, "Nome do Programa de Pós Graduação", null, "_term", $_GET);
                         $facets->facet_range("openalex.cited_by_count", 100, "Citações no Openalex", 'INT');
                         $facets->facetExistsField("doi", 2, "Possui DOI preenchido?", null, "_term", $_GET);
                         $facets->facetExistsField("openalex.id", 2, "Openalex?", null, "_term", $_GET);

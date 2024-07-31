@@ -57,7 +57,7 @@ class Elasticsearch
         // } else {
         //     $params["index"] = $index;
         // }
-        
+
         $params["index"] = $index;
         $params["_source"] = $fields;
         $params["size"] = $size;
@@ -138,7 +138,7 @@ class Elasticsearch
         } else {
             $params["index"] = $index;
         }
-                
+
         $params["body"] = $body;
 
         $response = $client->deleteByQuery($params);
@@ -441,7 +441,6 @@ class Facets
         if (isset($get_search["page"])) {
             unset($get_search["page"]);
         }
-
         $query = $this->query;
         $query["aggs"]["counts"]["terms"]["field"] = "$field.keyword";
         if (!empty($_SESSION['oauthuserdata'])) {

@@ -12,7 +12,7 @@ if (isset($_GET["oai"])) {
     }
 
     $oaiUrl = $_GET["oai"];
-    $client_harvester = new \Phpoaipmh\Client(''.$oaiUrl.'');
+    $client_harvester = new \Phpoaipmh\Client('' . $oaiUrl . '');
     $myEndpoint = new \Phpoaipmh\Endpoint($client_harvester);
 
 
@@ -46,16 +46,16 @@ if (isset($_GET["oai"])) {
     }
     if (isset($_GET["typeOfContent"])) {
         $body_repository["doc"]["typeOfContent"] = $_GET["typeOfContent"];
-    }    
+    }
     $body_repository["doc"]["date"] = (string)$identify->responseDate;
     $body_repository["doc"]["url"] = (string)$identify->request;
     $body_repository["doc"]["type"] = "journal";
     $body_repository["doc_as_upsert"] = true;
 
-    $sha256 = hash('sha256', ''.$body_repository["doc"]["url"].'');
+    $sha256 = hash('sha256', '' . $body_repository["doc"]["url"] . '');
 
     $insert_repository_result = Elasticsearch::update($sha256, $body_repository, $indexAdm);
-    
+
     // Store repository data - Fim
 
     // Results will be iterator of SimpleXMLElement objects
@@ -80,7 +80,7 @@ if (isset($_GET["oai"])) {
 
             if ($rec->{'header'}->attributes()->{'status'} != "deleted") {
 
-                $sha256 = hash('sha256', ''.$rec->{'header'}->{'identifier'}.'');
+                $sha256 = hash('sha256', '' . $rec->{'header'}->{'identifier'} . '');
 
 
                 if (!empty($_GET["repositoryName"])) {
@@ -88,7 +88,7 @@ if (isset($_GET["oai"])) {
                 } else {
                     $query["doc"]["source"] = $repositoryName;
                 }
-                
+
                 $query["doc"]["harvester_id"] = (string)$rec->{'header'}->{'identifier'};
                 if (isset($_GET["area"])) {
                     $query["doc"]["area"] = $_GET["area"];
@@ -122,15 +122,15 @@ if (isset($_GET["oai"])) {
                 foreach ($rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'contrib-group'}->{'contrib'} as $autores) {
 
                     if ($autores->attributes()->{'contrib-type'} == "author") {
-                        $string_author = (string)$autores->{'name'}->{'given-names'}.' '.$autores->{'name'}->{'surname'};
+                        $string_author = (string)$autores->{'name'}->{'given-names'} . ' ' . $autores->{'name'}->{'surname'};
                         if ($string_author != "O Editor" || $string_author != "Os Editores") {
-                            $query["doc"]["author"][$i]["person"]["completeName"] = (string)$autores->{'name'}->{'given-names'}.' '.$autores->{'name'}->{'surname'};
+                            $query["doc"]["author"][$i]["person"]["completeName"] = (string)$autores->{'name'}->{'given-names'} . ' ' . $autores->{'name'}->{'surname'};
                         }
-                        $query["doc"]["author"][$i]["person"]["name"] = (string)$autores->{'name'}->{'surname'}.', '.$autores->{'name'}->{'given-names'};
+                        $query["doc"]["author"][$i]["person"]["name"] = (string)$autores->{'name'}->{'surname'} . ', ' . $autores->{'name'}->{'given-names'};
 
                         if (isset($autores->{'aff'})) {
                             if ($_GET["useTematres"] == true) {
-                                $resultTematres = Authorities::tematresQuery(trim(strip_tags((string)$autores->{'aff'})), $tematres_url); 
+                                $resultTematres = Authorities::tematresQuery(trim(strip_tags((string)$autores->{'aff'})), $tematres_url);
                                 if ($resultTematres['foundTerm'] != "ND") {
                                     $query["doc"]["author"][$i]["organization"]["name"] = $resultTematres['foundTerm'];
                                     $query["doc"]["author"][$i]["organization"]["tematres"] = true;
@@ -140,7 +140,6 @@ if (isset($_GET["oai"])) {
                             } else {
                                 $query["doc"]["author"][$i]["organization"]["name"] = trim(strip_tags((string)$autores->{'aff'}));
                             }
-                            
                         }
 
                         if (isset($autores->{'uri'})) {
@@ -167,11 +166,11 @@ if (isset($_GET["oai"])) {
                 } else {
                     $query["doc"]["type"] = "Artigo";
                 }
-                
+
                 $query["doc_as_upsert"] = true;
 
                 foreach ($rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'self-uri'} as $self_uri) {
-                    $query["doc"]["relation"][]=(string)$self_uri->attributes('http://www.w3.org/1999/xlink');
+                    $query["doc"]["relation"][] = (string)$self_uri->attributes('http://www.w3.org/1999/xlink');
                 }
 
                 //print_r($query);
@@ -181,10 +180,8 @@ if (isset($_GET["oai"])) {
 
                 unset($query);
                 flush();
-
             }
         }
-
     } elseif ($_GET["metadataFormat"] == "oai_dc") {
 
         if (isset($_GET["set"])) {
@@ -195,145 +192,143 @@ if (isset($_GET["oai"])) {
         foreach ($recs as $rec) {
             $data = $rec->metadata->children('http://www.openarchives.org/OAI/2.0/oai_dc/');
             $rows = $data?->children('http://purl.org/dc/elements/1.1/');
-            
-            if (isset($rows->publisher)) {
-                $query["doc"]["isPartOf"]["publisher"]["organization"]["name"] = (string)$rows->publisher;
-            }
-
             if (isset($rows->title)) {
-                $query["doc"]["name"] = (string)$rows->title[0];
-                if (isset($rows->title[1])) {
-                    $query["doc"]["alternateName"] = (string)$rows->title[1];
-                }
-            }
-
-            if (isset($rows->identifier)) {
-                $identifierString = (string)$rows->identifier[1];
-                if (substr($identifierString, 0, 2) == "10"){
-                    $query["doc"]["doi"] = (string)$rows->identifier[1];
-                }                
-            }
-
-            if (isset($rows->identifier)) {
-                if (substr((string)$rows->identifier, 0, 4) === "http"){
-                    $query["doc"]["url"] = (string)$rows->identifier;
-                }
-            }
-
-            if (isset($rows->identifier)) {
-                if (substr((string)$rows->identifier, 0, 4) === "http"){
-                    $query["doc"]["relation"][] = (string)$rows->identifier;
-                }
-            }
-
-            if (isset($rows->description)) {
-                if (!isset($query["doc"]["description"])) {
-                    $query["doc"]["description"] = (string)$rows->description[0];
-                }
-            }            
-
-            if (isset($rows->source)) {
-                $query["doc"]["isPartOf"]["name"] = $repositoryName;
-            }
-
-            if (isset($rows->subject)) {
-                $subjectString = (string)$rows->subject;
-                $subjectArray = explode(";", $subjectString);
-                if (is_array($subjectArray)) {
-                    $query["doc"]["about"] = $subjectArray;
-                } else {
-                    $query["doc"]["about"][] = $subjectArray;
+                if (isset($rows->publisher)) {
+                    $query["doc"]["isPartOf"]["publisher"]["organization"]["name"] = (string)$rows->publisher;
                 }
 
-                if (isset($rows->subject[1])) {
-                    $subjectString = (string)$rows->subject[1];
+                if (isset($rows->title)) {
+                    $query["doc"]["name"] = (string)$rows->title[0];
+                    if (isset($rows->title[1])) {
+                        $query["doc"]["alternateName"] = (string)$rows->title[1];
+                    }
+                }
+
+                if (isset($rows->identifier)) {
+                    $identifierString = (string)$rows->identifier[1];
+                    if (substr($identifierString, 0, 2) == "10") {
+                        $query["doc"]["doi"] = (string)$rows->identifier[1];
+                    }
+                }
+
+                if (isset($rows->identifier)) {
+                    if (substr((string)$rows->identifier, 0, 4) === "http") {
+                        $query["doc"]["url"] = (string)$rows->identifier;
+                    }
+                }
+
+                if (isset($rows->identifier)) {
+                    if (substr((string)$rows->identifier, 0, 4) === "http") {
+                        $query["doc"]["relation"][] = (string)$rows->identifier;
+                    }
+                }
+
+                if (isset($rows->description)) {
+                    if (!isset($query["doc"]["description"])) {
+                        $query["doc"]["description"] = (string)$rows->description[0];
+                    }
+                }
+
+                if (isset($rows->source)) {
+                    $query["doc"]["isPartOf"]["name"] = $repositoryName;
+                }
+
+                if (isset($rows->subject)) {
+                    $subjectString = (string)$rows->subject;
                     $subjectArray = explode(";", $subjectString);
                     if (is_array($subjectArray)) {
-                        $query["doc"]["about"] = array_merge($query["doc"]["about"], $subjectArray);
+                        $query["doc"]["about"] = $subjectArray;
                     } else {
                         $query["doc"]["about"][] = $subjectArray;
                     }
-                }
-                
-                if (isset($rows->subject[2])) {
-                    $subjectString = (string)$rows->subject[2];
-                    $subjectArray = explode(";", $subjectString);
-                    if (is_array($subjectArray)) {
-                        $query["doc"]["about"] = array_merge($query["doc"]["about"], $subjectArray);
-                    } else {
-                        $query["doc"]["about"][] = $subjectArray;
+
+                    if (isset($rows->subject[1])) {
+                        $subjectString = (string)$rows->subject[1];
+                        $subjectArray = explode(";", $subjectString);
+                        if (is_array($subjectArray)) {
+                            $query["doc"]["about"] = array_merge($query["doc"]["about"], $subjectArray);
+                        } else {
+                            $query["doc"]["about"][] = $subjectArray;
+                        }
                     }
-                }                   
-                
-            }            
+
+                    if (isset($rows->subject[2])) {
+                        $subjectString = (string)$rows->subject[2];
+                        $subjectArray = explode(";", $subjectString);
+                        if (is_array($subjectArray)) {
+                            $query["doc"]["about"] = array_merge($query["doc"]["about"], $subjectArray);
+                        } else {
+                            $query["doc"]["about"][] = $subjectArray;
+                        }
+                    }
+                }
 
 
-            if (isset($rows->creator)) {
-                $i = 0;
-                foreach ($rows->creator as $author) {
-                    $authorArray = explode(";", (string)$author);
-                    $query["doc"]["author"][$i]["person"]["name"] = $authorArray[0];
-                    if (!empty($authorArray[1])) {
-                        if ($_GET["useTematres"] == true) {
-                            $resultTematres = Authorities::tematresQuery(trim(strip_tags($authorArray[1])), $tematres_url);
-                            if ($resultTematres['foundTerm'] != "ND") {
-                                $query["doc"]["author"][$i]["organization"]["name"] = $resultTematres['foundTerm'];
-                                $query["doc"]["author"][$i]["organization"]["tematres"] = true;
+                if (isset($rows->creator)) {
+                    $i = 0;
+                    foreach ($rows->creator as $author) {
+                        $authorArray = explode(";", (string)$author);
+                        $query["doc"]["author"][$i]["person"]["name"] = $authorArray[0];
+                        if (!empty($authorArray[1])) {
+                            if ($_GET["useTematres"] == true) {
+                                $resultTematres = Authorities::tematresQuery(trim(strip_tags($authorArray[1])), $tematres_url);
+                                if ($resultTematres['foundTerm'] != "ND") {
+                                    $query["doc"]["author"][$i]["organization"]["name"] = $resultTematres['foundTerm'];
+                                    $query["doc"]["author"][$i]["organization"]["tematres"] = true;
+                                } else {
+                                    $query["doc"]["author"][$i]["organization"]["name"] = trim(strip_tags($authorArray[1]));
+                                }
                             } else {
                                 $query["doc"]["author"][$i]["organization"]["name"] = trim(strip_tags($authorArray[1]));
                             }
-                        } else {
-                            $query["doc"]["author"][$i]["organization"]["name"] = trim(strip_tags($authorArray[1]));
-                        }                        
+                        }
+                        $i++;
                     }
-                    $i++;
+                    $query["doc"]["numAutores"] = $i;
                 }
-                $query["doc"]["numAutores"] = $i;
-            }            
 
-            if (isset($rows->date)) {
-                $query["doc"]["datePublished"] = substr((string)$rows->date, 0, 4);
+                if (isset($rows->date)) {
+                    $query["doc"]["datePublished"] = substr((string)$rows->date, 0, 4);
+                }
+
+                if (isset($rows->relation)) {
+                    $query["doc"]["relation"][] = (string)$rows->relation;
+                }
+
+                if (isset($rows->relation)) {
+                    $relationString = (string)$rows->relation;
+                    if (substr($relationString, 0, 2) == "10") {
+                        $query["doc"]["doi"] = (string)$rows->relation;
+                    }
+                }
+
+                $id = (string)$rec->header->identifier;
+
+
+                if (isset($_GET["area"])) {
+                    $query["doc"]["area"] = $_GET["area"];
+                }
+
+                if (!empty($_GET["repositoryName"])) {
+                    $query["doc"]["source"] = $_GET["repositoryName"];
+                } else {
+                    $query["doc"]["source"] = $repositoryName;
+                }
+                $query["doc"]["origin"] = "OAI-PHM";
+                if (isset($_GET["typeOfContent"])) {
+                    $query["doc"]["type"] = $_GET["typeOfContent"];
+                } else {
+                    $query["doc"]["type"] = "Artigo";
+                }
+                $query["doc_as_upsert"] = true;
+                unset($author);
+                //print_r($query);
+                $resultado = Elasticsearch::update($id, $query);
+                //print_r($resultado);
+                //print_r($query);
+                unset($query);
             }
-
-            if (isset($rows->relation)) {
-                $query["doc"]["relation"][] = (string)$rows->relation;
-            }
-            
-            if (isset($rows->relation)) {
-                $relationString = (string)$rows->relation;
-                if (substr($relationString, 0, 2) == "10"){
-                    $query["doc"]["doi"] = (string)$rows->relation;
-                }                
-            }
-
-            $id = (string)$rec->header->identifier;
-
-
-            if (isset($_GET["area"])) {
-                $query["doc"]["area"] = $_GET["area"];
-            }
-
-            if (!empty($_GET["repositoryName"])) {
-                $query["doc"]["source"] = $_GET["repositoryName"];
-            } else {
-                $query["doc"]["source"] = $repositoryName;
-            }
-            $query["doc"]["origin"] = "OAI-PHM";
-            if (isset($_GET["typeOfContent"])) {
-                $query["doc"]["type"] = $_GET["typeOfContent"];
-            } else {
-                $query["doc"]["type"] = "Artigo";
-            }
-            $query["doc_as_upsert"] = true;
-            unset($author);
-            //print_r($query);
-            $resultado = Elasticsearch::update($id, $query);
-            //print_r($resultado);
-            //print_r($query);
-            unset($query);
-
         }
-
     } elseif ($_GET["metadataFormat"] == "rfc1807") {
 
         $recs = $myEndpoint->listRecords('rfc1807');
@@ -342,7 +337,7 @@ if (isset($_GET["oai"])) {
 
                 //var_dump($rec);
 
-                $sha256 = hash('sha256', ''.$rec->{'header'}->{'identifier'}.'');
+                $sha256 = hash('sha256', '' . $rec->{'header'}->{'identifier'} . '');
 
                 if (!empty($_GET["repositoryName"])) {
                     $query["doc"]["source"] = $_GET["repositoryName"];
@@ -383,7 +378,7 @@ if (isset($_GET["oai"])) {
                 foreach ($rec->{'metadata'}->{'rfc1807'}->{'author'} as $autor) {
                     $autor_array = explode(";", (string)$autor);
                     $autor_nome_array = explode(",", (string)$autor_array[0]);
-                    $query["doc"]["author"][$i]["person"]["completeName"] = $autor_nome_array[1].' '.ucwords(strtolower($autor_nome_array[0]));
+                    $query["doc"]["author"][$i]["person"]["completeName"] = $autor_nome_array[1] . ' ' . ucwords(strtolower($autor_nome_array[0]));
                     $query["doc"]["author"][$i]["person"]["name"] = (string)$autor_array[0];
                     if (isset($autor_array[1])) {
                         if ($_GET["useTematres"] == true) {
@@ -412,7 +407,7 @@ if (isset($_GET["oai"])) {
                 $query["doc"]["url"] = (string)$rec->{'metadata'}->{'rfc1807'}->{'id'};
 
 
-                $query["doc"]["relation"][]=(string)$rec->{'metadata'}->{'rfc1807'}->{'id'};
+                $query["doc"]["relation"][] = (string)$rec->{'metadata'}->{'rfc1807'}->{'id'};
 
                 $query["doc"]["origin"] = "OAI-PHM";
                 if (isset($_GET["typeOfContent"])) {
@@ -427,11 +422,10 @@ if (isset($_GET["oai"])) {
 
                 unset($query);
                 flush();
-
             }
         }
     } else {
-        echo "Formato de metadados não definido"; 
+        echo "Formato de metadados não definido";
     }
 } elseif (isset($_GET["delete"])) {
     $delete_name = $_GET["delete_name"];
@@ -439,13 +433,11 @@ if (isset($_GET["oai"])) {
     $delete_repository = Elasticsearch::delete($_GET["delete"], $indexAdm);
     print_r($delete_repository);
     echo '<br/>';
-    $body["query"]["query_string"]["query"] = 'source:"'.$delete_name.'"';
+    $body["query"]["query_string"]["query"] = 'source:"' . $delete_name . '"';
     print_r($body);
     echo '<br/><br/>';
     $delete_records = Elasticsearch::deleteByQuery($body);
     print_r($delete_records);
-
-
 } else {
     echo "URL não informada";
 }
