@@ -113,10 +113,6 @@
                     <ul class="list-group list-group-flush">
                         <?php Homepage::homeAgg('origin'); ?>
                     </ul>
-                    <h2>Grande área</h2>
-                    <ul class="list-group list-group-flush">
-                        <?php Homepage::homeAgg('area'); ?>
-                    </ul>
                 </div>
                 <!--
                 <div class="col">
